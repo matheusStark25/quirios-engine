@@ -630,6 +630,12 @@ registro de campeões.
 
 ### Vantagem com memória quântica: aprender com dados quânticos
 
+![Memória quântica contra o clássico em dois processadores quânticos reais da IBM](docs/img/memoria_qpu_real.png)
+
+![Painel da IBM: os 12 jobs concluídos no ibm_kingston e no ibm_marrakesh](docs/img/ibm_workloads.png)
+
+![Verificação da assinatura de cada comprovante](docs/img/verificacao_assinaturas.png)
+
 > **Em dois computadores quânticos reais da IBM (Heron, 156 qubits, 19/11/2026):**
 > 4 qubits e 64 cópias para cada lado.
 >

@@ -22,6 +22,8 @@ quantum states **with quantum memory** (two copies stored and measured together)
 best classical strategy (each copy measured as soon as it arrives), **with the same number of copies on both
 sides**.
 
+![Quantum memory vs classical on two real IBM quantum processors](docs/img/memoria_qpu_real.png)
+
 | Processor | Run | Test states | With quantum memory | Without (classical) | Paired McNemar test |
 |---|---|---|---|---|---|
 | ibm_marrakesh | 1 | 20 | 80% | 70% | 4 vs 2, p = 0.69 |
@@ -43,6 +45,11 @@ sides**.
 
 ### Verify it yourself
 
+**IBM's own dashboard** lists the 12 jobs as *Completed* on ibm_kingston and ibm_marrakesh (screenshot of the
+account's Workloads page, November 19, 2026; job ids, times and usage match the proofs):
+
+![IBM Quantum Platform workloads: 12 completed jobs on ibm_kingston and ibm_marrakesh](docs/img/ibm_workloads.png)
+
 Every run produces a proof: the IBM job ids, backend, timestamps, QPU time, SHA-256 of the raw counts and the
 circuits in OpenQASM 3, sealed and signed with **ML-DSA-65** (NIST FIPS 204, post-quantum). The proofs and the
 public key are in [`resultados/qpu_real/`](resultados/qpu_real/):
@@ -51,6 +58,8 @@ public key are in [`resultados/qpu_real/`](resultados/qpu_real/):
 pip install -e ".[qiskit,pqc]"
 python -m quirios_engine.qpu verificar resultados/qpu_real/comprovante_qpu_memoria_ibm_kingston_20261119_194200_calibrado.json --chave-publica resultados/qpu_real/chave_publica_mldsa65.pub.pem
 ```
+
+![Signature check of every real-hardware proof](docs/img/verificacao_assinaturas.png)
 
 Change a single number in a proof and the check fails. The job ids (for example `dbvnmq5s2omc73886k00` and
 `dbvnnh5s2omc73886lgg` on ibm_kingston) can be confirmed in IBM's dashboard by the account owner.
