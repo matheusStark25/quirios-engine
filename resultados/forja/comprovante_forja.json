@@ -1,0 +1,285 @@
+{
+  "formato": "quirios.forja",
+  "data": "2026-11-05T20:05:58",
+  "problema": "MNIST, referência densa 784-1024-1024-10, meta: >= 30x menor",
+  "protocolo": "do_zero",
+  "original": {
+    "parametros": 1863690,
+    "acuracia_teste": 0.9802,
+    "ms_lote_1": 0.6940000166650862,
+    "ms_lote_1000": 41.799600003287196,
+    "s_por_epoca": 16.387957166686345,
+    "epocas": 3
+  },
+  "orcamento_por_motor": 30,
+  "passos_por_projeto_na_busca": 470,
+  "epocas_treino_final": 3,
+  "motores": {
+    "quantico": {
+      "motor": "quantico",
+      "melhor": {
+        "fitness": 0.9354923279559705,
+        "acuracia": 0.9642,
+        "parametros": 20938,
+        "compressao": 89.00993409112618,
+        "descricao": "largura 1024; camada 0: TT 3 núcleos, ligação 8; camada 2: TT 3 núcleos, ligação 4",
+        "s": 13.11958220001543,
+        "genoma": {
+          "rede:largura": 1024,
+          "0:metodo": "tt",
+          "0:nivel": 2,
+          "0:nucleos": 3,
+          "2:metodo": "tt",
+          "2:nivel": 1,
+          "2:nucleos": 3
+        }
+      },
+      "avaliados": 23,
+      "historico": [
+        {
+          "geracao": 0,
+          "melhor_fitness": 0.926608381863334,
+          "melhor_acuracia": 0.9568,
+          "melhor_compressao": 53.22091495802159,
+          "avaliados": 6,
+          "media_geracao": -0.05791113104982285,
+          "entropia_bits": 13.0
+        },
+        {
+          "geracao": 1,
+          "melhor_fitness": 0.9332579494987668,
+          "melhor_acuracia": 0.9618,
+          "melhor_compressao": 94.26858877086495,
+          "avaliados": 11,
+          "media_geracao": -0.05587606491644376,
+          "entropia_bits": 8.768385655187842
+        },
+        {
+          "geracao": 2,
+          "melhor_fitness": 0.9332579494987668,
+          "melhor_acuracia": 0.9618,
+          "melhor_compressao": 94.26858877086495,
+          "avaliados": 16,
+          "media_geracao": -0.05093656058631957,
+          "entropia_bits": 6.689636346987319
+        },
+        {
+          "geracao": 3,
+          "melhor_fitness": 0.9354923279559705,
+          "melhor_acuracia": 0.9642,
+          "melhor_compressao": 89.00993409112618,
+          "avaliados": 21,
+          "media_geracao": 0.9278470784779,
+          "entropia_bits": 5.464633057584706
+        },
+        {
+          "geracao": 4,
+          "melhor_fitness": 0.9354923279559705,
+          "melhor_acuracia": 0.9642,
+          "melhor_compressao": 89.00993409112618,
+          "avaliados": 23,
+          "media_geracao": 0.933582160058648,
+          "entropia_bits": 4.437783258843142
+        }
+      ],
+      "n_qubits_gerador": 13,
+      "projetos_possiveis": 2592,
+      "tempo_s": 159.3,
+      "ligacoes_aprendidas": [
+        {
+          "genes": [
+            "rede:largura",
+            "2:nucleos"
+          ],
+          "bits": 0.09165563162182394
+        },
+        {
+          "genes": [
+            "0:nivel",
+            "0:nucleos"
+          ],
+          "bits": 0.048782511429205956
+        },
+        {
+          "genes": [
+            "rede:largura",
+            "0:metodo"
+          ],
+          "bits": 0.02067957261372346
+        },
+        {
+          "genes": [
+            "2:nivel",
+            "2:nucleos"
+          ],
+          "bits": 0.017768022708420497
+        },
+        {
+          "genes": [
+            "0:metodo",
+            "0:nivel"
+          ],
+          "bits": 0.010664006802652193
+        }
+      ],
+      "backend_gerador": "exato",
+      "final": {
+        "parametros": 20938,
+        "acuracia_teste": 0.968,
+        "compressao": 89.00993409112618,
+        "ms_lote_1": 1.0156500211451203,
+        "ms_lote_1000": 79.91090000723489
+      },
+      "pesos_sha256": "882ace2c3b925feae44c0847b59ce921810090662b84df5d1cb3ac6c7c280b91"
+    },
+    "classico": {
+      "motor": "classico",
+      "melhor": {
+        "fitness": 0.9342522189833036,
+        "acuracia": 0.9644,
+        "parametros": 34490,
+        "compressao": 54.03566251087272,
+        "descricao": "largura 2048; camada 0: TT 3 núcleos, ligação 2; camada 2: TT 4 núcleos, ligação 8",
+        "s": 21.528905500017572,
+        "genoma": {
+          "rede:largura": 2048,
+          "0:metodo": "tt",
+          "0:nivel": 0,
+          "0:nucleos": 3,
+          "2:metodo": "tt",
+          "2:nivel": 2,
+          "2:nucleos": 4
+        }
+      },
+      "avaliados": 22,
+      "historico": [
+        {
+          "geracao": 0,
+          "melhor_fitness": 0.9315143172533006,
+          "melhor_acuracia": 0.9612,
+          "melhor_compressao": 63.421016810726194,
+          "avaliados": 6,
+          "media_geracao": -0.06111655364772519
+        },
+        {
+          "geracao": 1,
+          "melhor_fitness": 0.9315143172533006,
+          "melhor_acuracia": 0.9612,
+          "melhor_compressao": 63.421016810726194,
+          "avaliados": 11,
+          "media_geracao": -0.05961875985592965
+        },
+        {
+          "geracao": 2,
+          "melhor_fitness": 0.9342522189833036,
+          "melhor_acuracia": 0.9644,
+          "melhor_compressao": 54.03566251087272,
+          "avaliados": 17,
+          "media_geracao": 0.5989522248149265
+        },
+        {
+          "geracao": 3,
+          "melhor_fitness": 0.9342522189833036,
+          "melhor_acuracia": 0.9644,
+          "melhor_compressao": 54.03566251087272,
+          "avaliados": 19,
+          "media_geracao": 0.6042313766546052
+        },
+        {
+          "geracao": 4,
+          "melhor_fitness": 0.9342522189833036,
+          "melhor_acuracia": 0.9644,
+          "melhor_compressao": 54.03566251087272,
+          "avaliados": 22,
+          "media_geracao": 0.6010454725167472
+        }
+      ],
+      "n_qubits_gerador": 13,
+      "projetos_possiveis": 2592,
+      "tempo_s": 201.4,
+      "final": {
+        "parametros": 34490,
+        "acuracia_teste": 0.973,
+        "compressao": 54.03566251087272,
+        "ms_lote_1": 1.5128000231925398,
+        "ms_lote_1000": 156.86650000861846
+      },
+      "pesos_sha256": "0041bea0803ecd4a24b443fdbc39bc00edbae84362a524e8b773c371a0f2c6ef"
+    },
+    "aleatorio": {
+      "motor": "aleatorio",
+      "melhor": {
+        "fitness": 0.9340931913424517,
+        "acuracia": 0.9626,
+        "parametros": 19530,
+        "compressao": 95.42703533026113,
+        "descricao": "largura 1024; camada 0: TT 3 núcleos, ligação 8; camada 2: TT 3 núcleos, ligação 2",
+        "s": 11.846340699994471,
+        "genoma": {
+          "rede:largura": 1024,
+          "0:metodo": "tt",
+          "0:nivel": 2,
+          "0:nucleos": 3,
+          "2:metodo": "tt",
+          "2:nivel": 0,
+          "2:nucleos": 3
+        }
+      },
+      "avaliados": 28,
+      "historico": [
+        {
+          "geracao": 0,
+          "melhor_fitness": 0.9315143172533006,
+          "melhor_acuracia": 0.9612,
+          "melhor_compressao": 63.421016810726194,
+          "avaliados": 6,
+          "media_geracao": -0.06111655364772519
+        },
+        {
+          "geracao": 1,
+          "melhor_fitness": 0.9315143172533006,
+          "melhor_acuracia": 0.9612,
+          "melhor_compressao": 63.421016810726194,
+          "avaliados": 12,
+          "media_geracao": -0.05690715748159344
+        },
+        {
+          "geracao": 2,
+          "melhor_fitness": 0.9315143172533006,
+          "melhor_acuracia": 0.9612,
+          "melhor_compressao": 63.421016810726194,
+          "avaliados": 17,
+          "media_geracao": -1.041251555605367
+        },
+        {
+          "geracao": 3,
+          "melhor_fitness": 0.9340931913424517,
+          "melhor_acuracia": 0.9626,
+          "melhor_compressao": 95.42703533026113,
+          "avaliados": 23,
+          "media_geracao": -0.3830492038324908
+        },
+        {
+          "geracao": 4,
+          "melhor_fitness": 0.9340931913424517,
+          "melhor_acuracia": 0.9626,
+          "melhor_compressao": 95.42703533026113,
+          "avaliados": 28,
+          "media_geracao": -1.0405115043019775
+        }
+      ],
+      "n_qubits_gerador": 13,
+      "projetos_possiveis": 2592,
+      "tempo_s": 114.3,
+      "final": {
+        "parametros": 19530,
+        "acuracia_teste": 0.9708,
+        "compressao": 95.42703533026113,
+        "ms_lote_1": 0.9534999844618142,
+        "ms_lote_1000": 56.7968999966979
+      },
+      "pesos_sha256": "4d3675f8dd21a1372935ee27473010aaf29a70900997d5139b6ff1438b269cb1"
+    }
+  },
+  "sha256_conteudo": "aa9843b4e4a35635acb39146ef56492d71ddaa03637826d11f4d841ad8348ad1"
+}

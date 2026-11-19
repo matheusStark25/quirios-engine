@@ -1,0 +1,302 @@
+{
+  "formato": "quirios.comprovante_qpu",
+  "tipo": "memoria",
+  "versao_quirios": "0.8.0",
+  "modo": "ibm",
+  "backend": "ibm_kingston",
+  "data": "2026-11-19T19:46:08",
+  "jobs": [
+    {
+      "job_id": "dbvnmq5s2omc73886k00",
+      "tipo": "memoria-bell",
+      "backend": "ibm_kingston",
+      "modo": "ibm",
+      "circuitos": 1920,
+      "shots": 1,
+      "registrado_em": "2026-11-19T19:43:48",
+      "contagens_sha256": "dddb5a1c288112280d19c514817bbfb483c45f27e56b3068cbd08f99c701d8be",
+      "uso_qpu_s": 4.0,
+      "horarios": {
+        "created": "2026-11-19T22:42:48.90708Z",
+        "finished": "2026-11-19T22:43:47.04528Z",
+        "running": "2026-11-19T22:42:50.481465Z"
+      }
+    },
+    {
+      "job_id": "dbvnnh5s2omc73886lgg",
+      "tipo": "memoria-uma-copia",
+      "backend": "ibm_kingston",
+      "modo": "ibm",
+      "circuitos": 3840,
+      "shots": 1,
+      "registrado_em": "2026-11-19T19:46:06",
+      "contagens_sha256": "46a752dd04b044cb40a2930a9e9ddea80184e2dbda07cd79eefe0aba1df6325b",
+      "uso_qpu_s": 4.0,
+      "horarios": {
+        "created": "2026-11-19T22:44:20.372678Z",
+        "finished": "2026-11-19T22:46:04.664825Z",
+        "running": "2026-11-19T22:44:22.992518Z"
+      }
+    }
+  ],
+  "n_qubits": 4,
+  "instancias": 40,
+  "eps": 0.9,
+  "eps_decodificacao": {
+    "com_memoria": 0.95,
+    "sem_memoria": 0.85
+  },
+  "copias_por_estado": {
+    "com_memoria": 64,
+    "sem_memoria": 64
+  },
+  "calibracao": {
+    "estados": 20,
+    "eps_com_memoria": 0.95,
+    "eps_sem_memoria": 0.85,
+    "grade": [
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95
+    ],
+    "metodo": "máxima verossimilhança do rótulo certo nos estados de calibração"
+  },
+  "acuracia": {
+    "com_memoria_quantica": 0.95,
+    "sem_memoria": 0.6,
+    "ic95_com_memoria": [
+      0.834958291820748,
+      0.9861796228538989
+    ],
+    "ic95_sem_memoria": [
+      0.445956198273935,
+      0.7365188938759863
+    ],
+    "mcnemar": {
+      "so_com_memoria_acertou": 15,
+      "so_sem_memoria_acertou": 1,
+      "p_valor": 0.000518798828125
+    }
+  },
+  "por_estado": [
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.010380108767777336,
+      "p_simetrico_sem_memoria": 0.46819105629691704
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.9999919785369131,
+      "p_simetrico_sem_memoria": 0.7439314577633919
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.9972248675800978,
+      "p_simetrico_sem_memoria": 0.4703989319278518
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.9973735511787449,
+      "p_simetrico_sem_memoria": 0.6432510566883672
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.048891491034448294,
+      "p_simetrico_sem_memoria": 0.4539864170112905
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 6.954344108006948e-06,
+      "p_simetrico_sem_memoria": 0.5357504390013674
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.9999912761591434,
+      "p_simetrico_sem_memoria": 0.5527157644331344
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.9465335908781435,
+      "p_simetrico_sem_memoria": 0.33801663955564065
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.00012808117734396812,
+      "p_simetrico_sem_memoria": 0.3784167851534204
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.9999999635148341,
+      "p_simetrico_sem_memoria": 0.5926964129145005
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.9813695674190791,
+      "p_simetrico_sem_memoria": 0.4897161634826619
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 7.3333573455830565e-06,
+      "p_simetrico_sem_memoria": 0.33248603324764203
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.999992729179707,
+      "p_simetrico_sem_memoria": 0.6104721346699155
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 2.4006553061177856e-08,
+      "p_simetrico_sem_memoria": 0.22917777609609372
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 3.825844036904168e-08,
+      "p_simetrico_sem_memoria": 0.598617399785658
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.9999999797801378,
+      "p_simetrico_sem_memoria": 0.5208675960185195
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.9999998822960025,
+      "p_simetrico_sem_memoria": 0.4171390747223125
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.0002974663006684133,
+      "p_simetrico_sem_memoria": 0.5844753017827208
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.05373766396172113,
+      "p_simetrico_sem_memoria": 0.6883548924133852
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 8.033032437140207e-06,
+      "p_simetrico_sem_memoria": 0.0819034847657698
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.9513476692568913,
+      "p_simetrico_sem_memoria": 0.5351957686156499
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.5005994155112979,
+      "p_simetrico_sem_memoria": 0.49724919148641195
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.05121669796096999,
+      "p_simetrico_sem_memoria": 0.5029294104076222
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.00015603971651228466,
+      "p_simetrico_sem_memoria": 0.48162552399975567
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.80696372042412,
+      "p_simetrico_sem_memoria": 0.5194190963988784
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.9999999999971525,
+      "p_simetrico_sem_memoria": 0.5393310972199957
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 1.0316819188968959e-09,
+      "p_simetrico_sem_memoria": 0.35908898835886516
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.9999999431915424,
+      "p_simetrico_sem_memoria": 0.6647663817815906
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.9998442612726774,
+      "p_simetrico_sem_memoria": 0.4634208396354856
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 4.52913832303757e-07,
+      "p_simetrico_sem_memoria": 0.4997518420797703
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.002753449445612943,
+      "p_simetrico_sem_memoria": 0.49348721007736757
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.9999995652172158,
+      "p_simetrico_sem_memoria": 0.42920249370710734
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.5019851902763676,
+      "p_simetrico_sem_memoria": 0.5639746130985405
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.0026199571345903354,
+      "p_simetrico_sem_memoria": 0.5097403261920579
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.004269056491816457,
+      "p_simetrico_sem_memoria": 0.4785443980502957
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.04912703683164957,
+      "p_simetrico_sem_memoria": 0.5089531324803506
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.09745399186833323,
+      "p_simetrico_sem_memoria": 0.5341473094683752
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.00013460039498815944,
+      "p_simetrico_sem_memoria": 0.0003416337150722581
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.5017291343989633,
+      "p_simetrico_sem_memoria": 0.6338118178166995
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.5006736060731313,
+      "p_simetrico_sem_memoria": 0.21750264967055066
+    }
+  ],
+  "circuito_com_memoria_exemplo_qasm3": "OPENQASM 3.0;\ninclude \"stdgates.inc\";\nbit[8] meas;\nqubit[8] q;\nx q[1];\nx q[2];\nx q[3];\ncx q[1], q[0];\ncx q[2], q[0];\ncx q[3], q[0];\nh q[0];\ns q[0];\nh q[1];\nx q[4];\nx q[7];\ncx q[5], q[4];\ncx q[6], q[4];\ncx q[7], q[4];\nh q[4];\ns q[4];\nh q[5];\ncx q[0], q[4];\nh q[0];\ncx q[1], q[5];\nh q[1];\ncx q[2], q[6];\nh q[2];\ncx q[3], q[7];\nh q[3];\nbarrier q[0], q[1], q[2], q[3], q[4], q[5], q[6], q[7];\nmeas[0] = measure q[0];\nmeas[1] = measure q[1];\nmeas[2] = measure q[2];\nmeas[3] = measure q[3];\nmeas[4] = measure q[4];\nmeas[5] = measure q[5];\nmeas[6] = measure q[6];\nmeas[7] = measure q[7];\n",
+  "circuito_sem_memoria_exemplo_qasm3": "OPENQASM 3.0;\ninclude \"stdgates.inc\";\nbit[4] meas;\nqubit[4] q;\nx q[1];\nx q[2];\ncx q[1], q[0];\ncx q[2], q[0];\ncx q[3], q[0];\nh q[0];\ns q[0];\nh q[1];\nh q[0];\nh q[1];\nbarrier q[0], q[1], q[2], q[3];\nmeas[0] = measure q[0];\nmeas[1] = measure q[1];\nmeas[2] = measure q[2];\nmeas[3] = measure q[3];\n",
+  "sha256_conteudo": "970ba1c1f3d7156ffda718e473654e98b6ed3cde34a5f337b54a9096a97f8aea"
+}

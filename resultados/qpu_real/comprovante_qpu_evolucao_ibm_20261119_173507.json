@@ -1,0 +1,140 @@
+{
+  "formato": "quirios.comprovante_qpu",
+  "tipo": "evolucao",
+  "versao_quirios": "0.8.0",
+  "modo": "ibm",
+  "backend": "ibm_marrakesh",
+  "data": "2026-11-19T17:39:02",
+  "resumo": "Evolução quântica: gerador de 16 qubits (15,552 arquiteturas em superposição), backend qiskit-ibm-ibm_marrakesh\n  entropia da população: 16.0 -> 8.6 bits\n  melhor: 92.5% (angulo/rx-ry/rzz/blocosx0/rep1/pauli, 0 portas 2q) | padrão: 88.7%\n  ligação aprendida: n_camadas_ent <-> repeticoes_dados (informação mútua 0.220 bits)\n  ligação aprendida: camada_pos <-> escala_alpha (informação mútua 0.096 bits)\n  ligação aprendida: codificacao <-> leitura (informação mútua 0.017 bits)",
+  "jobs": [
+    {
+      "job_id": "dbvlsbts2omc73883ta0",
+      "tipo": "amostragem",
+      "backend": "ibm_marrakesh",
+      "modo": "ibm",
+      "circuitos": 1,
+      "shots": 24,
+      "registrado_em": "2026-11-19T17:38:15",
+      "contagens_sha256": "93d10182e39e7a2489c03dc6e655f771c474a410f24748ad6814fbd7872755c6",
+      "uso_qpu_s": null,
+      "horarios": {
+        "created": "2026-11-19T20:38:07.100414Z",
+        "finished": "2026-11-19T20:38:14.343142Z",
+        "running": "2026-11-19T20:38:08.773896Z"
+      }
+    },
+    {
+      "job_id": "dbvlsethdvas73biaaqg",
+      "tipo": "amostragem",
+      "backend": "ibm_marrakesh",
+      "modo": "ibm",
+      "circuitos": 1,
+      "shots": 24,
+      "registrado_em": "2026-11-19T17:38:29",
+      "contagens_sha256": "1e5cb5591fe57d4572bbd850fc515f8537e7ea11cd54c043ce21604ce29fea2f",
+      "uso_qpu_s": null,
+      "horarios": {
+        "created": "2026-11-19T20:38:19.794211Z",
+        "finished": "2026-11-19T20:38:28.312784Z",
+        "running": "2026-11-19T20:38:21.210845Z"
+      }
+    },
+    {
+      "job_id": "dbvlsi6q4uuc73a1d9u0",
+      "tipo": "amostragem",
+      "backend": "ibm_marrakesh",
+      "modo": "ibm",
+      "circuitos": 1,
+      "shots": 24,
+      "registrado_em": "2026-11-19T17:38:45",
+      "contagens_sha256": "18d0e9a2e5af5bdd196088bf57c4b183619d7a2960d66d3df7acfb80f46fb1fc",
+      "uso_qpu_s": null,
+      "horarios": {
+        "created": "2026-11-19T20:38:32.733968Z",
+        "finished": "2026-11-19T20:38:44.241967Z",
+        "running": "2026-11-19T20:38:34.620915Z"
+      }
+    },
+    {
+      "job_id": "dbvlsm6q4uuc73a1da90",
+      "tipo": "amostragem",
+      "backend": "ibm_marrakesh",
+      "modo": "ibm",
+      "circuitos": 1,
+      "shots": 24,
+      "registrado_em": "2026-11-19T17:38:59",
+      "contagens_sha256": "7b90584f2447d92a84000d67b180b478bc0f71c16857cc628b5e9fcf73e18e76",
+      "uso_qpu_s": null,
+      "horarios": {
+        "created": "2026-11-19T20:38:49.004879Z",
+        "finished": "2026-11-19T20:38:58.625865Z",
+        "running": "2026-11-19T20:38:50.775953Z"
+      }
+    }
+  ],
+  "geracoes": [
+    {
+      "geracao": 0,
+      "melhor_acuracia": 0.9192825814536341,
+      "entropia_bits": 16.0,
+      "genomas_distintos": 24,
+      "ligacao_max_bits": 6.00642469465297e-17
+    },
+    {
+      "geracao": 1,
+      "melhor_acuracia": 0.925234962406015,
+      "entropia_bits": 13.432539984586276,
+      "genomas_distintos": 24,
+      "ligacao_max_bits": 0.20067109553982354
+    },
+    {
+      "geracao": 2,
+      "melhor_acuracia": 0.925234962406015,
+      "entropia_bits": 10.705695520105998,
+      "genomas_distintos": 23,
+      "ligacao_max_bits": 0.24276626082467756
+    },
+    {
+      "geracao": 3,
+      "melhor_acuracia": 0.925234962406015,
+      "entropia_bits": 8.644169640947684,
+      "genomas_distintos": 24,
+      "ligacao_max_bits": 0.2202029866217724
+    }
+  ],
+  "melhor": {
+    "descricao": "angulo/rx-ry/rzz/blocosx0/rep1/pauli",
+    "acuracia_cv": 0.925234962406015,
+    "portas_2q": 0
+  },
+  "padrao": {
+    "acuracia_cv": 0.88734335839599
+  },
+  "ligacoes": [
+    {
+      "genes": [
+        "n_camadas_ent",
+        "repeticoes_dados"
+      ],
+      "bits": 0.2202029866217724
+    },
+    {
+      "genes": [
+        "camada_pos",
+        "escala_alpha"
+      ],
+      "bits": 0.09557772324567157
+    },
+    {
+      "genes": [
+        "codificacao",
+        "leitura"
+      ],
+      "bits": 0.0166082616568476
+    }
+  ],
+  "circuito_gerador_qasm3": "OPENQASM 3.0;\ninclude \"stdgates.inc\";\ngate rzz(p0) _gate_q_0, _gate_q_1 {\n  cx _gate_q_0, _gate_q_1;\n  rz(p0) _gate_q_1;\n  cx _gate_q_0, _gate_q_1;\n}\nbit[16] meas;\nqubit[16] q;\nry(1.4597012965675644) q[0];\nry(1.5032372155441243) q[1];\nry(0.5594827310304592) q[2];\nry(0.7593573786023444) q[3];\nry(0.7647738005405067) q[4];\nry(0.49746972473879114) q[5];\nry(0.7232268714918837) q[6];\nry(2.034212293284324) q[7];\nry(1.0772070921082624) q[8];\nry(1.4092665284527228) q[9];\nry(0.42263413861488175) q[10];\nry(1.8326201948922565) q[11];\nry(0.5209746458939236) q[12];\nry(0.6214000816960614) q[13];\nry(1.9647315007959165) q[14];\nry(0.5361759669816463) q[15];\nrzz(0.4444294383913806) q[0], q[1];\nrzz(-0.7634578264366769) q[1], q[2];\nrzz(-1.5906961294741073) q[2], q[3];\nrzz(-1.465240750685886) q[3], q[4];\nrzz(1.1138495093398386) q[4], q[5];\nrzz(1.1572492926554192) q[5], q[6];\nrzz(0.4481352470898602) q[6], q[7];\nrzz(0.6099888474735443) q[7], q[8];\nrzz(0.16353477815443576) q[8], q[9];\nrzz(1.289718564692049) q[9], q[10];\nrzz(0.9420152737871388) q[10], q[11];\nrzz(-1.6628042096681124) q[11], q[12];\nrzz(1.1430786107496136) q[12], q[13];\nrzz(-1.3288018410454683) q[13], q[14];\nrzz(0.8889747758281177) q[14], q[15];\nrzz(-1.011578490365796) q[15], q[0];\nry(0.11529857053772899) q[0];\nry(0.13511566562114738) q[1];\nry(0.13175470296781852) q[2];\nry(0.5978718592177527) q[3];\nry(-0.41031199807920476) q[4];\nry(0.2568810840934629) q[5];\nry(-0.4043654271649473) q[6];\nry(0.2866672808955714) q[7];\nry(-0.31384746113120376) q[8];\nry(-0.136527936218057) q[9];\nry(-0.05056590409715115) q[10];\nry(0.4508632687030179) q[11];\nry(0.12672979689440173) q[12];\nry(0.1904477989686171) q[13];\nry(0.6899463451676745) q[14];\nry(-0.029330407446416535) q[15];\nbarrier q[0], q[1], q[2], q[3], q[4], q[5], q[6], q[7], q[8], q[9], q[10], q[11], q[12], q[13], q[14], q[15];\nmeas[0] = measure q[0];\nmeas[1] = measure q[1];\nmeas[2] = measure q[2];\nmeas[3] = measure q[3];\nmeas[4] = measure q[4];\nmeas[5] = measure q[5];\nmeas[6] = measure q[6];\nmeas[7] = measure q[7];\nmeas[8] = measure q[8];\nmeas[9] = measure q[9];\nmeas[10] = measure q[10];\nmeas[11] = measure q[11];\nmeas[12] = measure q[12];\nmeas[13] = measure q[13];\nmeas[14] = measure q[14];\nmeas[15] = measure q[15];\n",
+  "n_qubits_gerador": 16,
+  "dataset": "breast_cancer",
+  "sha256_conteudo": "e4c2a73ee9ddbcbd5bc485abb6e4bf26a257ab54307226fddb7957a040f7ef7e"
+}

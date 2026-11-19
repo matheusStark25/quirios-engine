@@ -1,0 +1,75 @@
+{
+  "formato": "quirios.complemento_uso_qpu",
+  "versao_quirios": "0.8.0",
+  "carimbo_da_prova": "20261119_173507",
+  "consultado_em": "2026-11-19T17:41:01",
+  "motivo": "qiskit-ibm-runtime 0.50 informa o tempo de QPU em job.usage(), não mais em metrics()",
+  "jobs": [
+    {
+      "comprovante": "comprovante_qpu_dados_ibm_20261119_173507.json",
+      "experimento": "dados",
+      "job_id": "dbvls2lhdvas73bia9ug",
+      "backend": "ibm_marrakesh",
+      "status": "DONE",
+      "uso_qpu_s": 3.0
+    },
+    {
+      "comprovante": "comprovante_qpu_dados_ibm_20261119_173507.json",
+      "experimento": "dados",
+      "job_id": "dbvls5thdvas73biaa70",
+      "backend": "ibm_marrakesh",
+      "status": "DONE",
+      "uso_qpu_s": 3.0
+    },
+    {
+      "comprovante": "comprovante_qpu_evolucao_ibm_20261119_173507.json",
+      "experimento": "evolucao",
+      "job_id": "dbvlsbts2omc73883ta0",
+      "backend": "ibm_marrakesh",
+      "status": "DONE",
+      "uso_qpu_s": 2.0
+    },
+    {
+      "comprovante": "comprovante_qpu_evolucao_ibm_20261119_173507.json",
+      "experimento": "evolucao",
+      "job_id": "dbvlsethdvas73biaaqg",
+      "backend": "ibm_marrakesh",
+      "status": "DONE",
+      "uso_qpu_s": 2.0
+    },
+    {
+      "comprovante": "comprovante_qpu_evolucao_ibm_20261119_173507.json",
+      "experimento": "evolucao",
+      "job_id": "dbvlsi6q4uuc73a1d9u0",
+      "backend": "ibm_marrakesh",
+      "status": "DONE",
+      "uso_qpu_s": 2.0
+    },
+    {
+      "comprovante": "comprovante_qpu_evolucao_ibm_20261119_173507.json",
+      "experimento": "evolucao",
+      "job_id": "dbvlsm6q4uuc73a1da90",
+      "backend": "ibm_marrakesh",
+      "status": "DONE",
+      "uso_qpu_s": 2.0
+    },
+    {
+      "comprovante": "comprovante_qpu_memoria_ibm_20261119_173507.json",
+      "experimento": "memoria",
+      "job_id": "dbvlr3lhdvas73bia8cg",
+      "backend": "ibm_marrakesh",
+      "status": "DONE",
+      "uso_qpu_s": 4.0
+    },
+    {
+      "comprovante": "comprovante_qpu_memoria_ibm_20261119_173507.json",
+      "experimento": "memoria",
+      "job_id": "dbvlreds2omc73883re0",
+      "backend": "ibm_marrakesh",
+      "status": "DONE",
+      "uso_qpu_s": 4.0
+    }
+  ],
+  "uso_qpu_total_s": 22.0,
+  "sha256_conteudo": "9b33f5eafc8186ed7d6a8d8d32ae0d1e15e1b20f601473890dc63250be90c3b9"
+}

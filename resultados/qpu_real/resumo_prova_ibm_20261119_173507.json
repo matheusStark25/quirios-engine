@@ -1,0 +1,52 @@
+{
+  "formato": "quirios.prova_qpu",
+  "versao_quirios": "0.8.0",
+  "modo": "ibm",
+  "dispositivo": "ibm_marrakesh",
+  "data": "2026-11-19T17:39:02",
+  "chave_publica": "chave_publica_mldsa65.pub.pem",
+  "experimentos": [
+    {
+      "experimento": "memoria",
+      "comprovante": "comprovante_qpu_memoria_ibm_20261119_173507.json",
+      "backend": "ibm_marrakesh",
+      "modo": "ibm",
+      "resultado": "com memória quântica 80% · sem memória 70%",
+      "jobs": [
+        "dbvlr3lhdvas73bia8cg",
+        "dbvlreds2omc73883re0"
+      ],
+      "uso_qpu_s": null,
+      "verificado": true
+    },
+    {
+      "experimento": "dados",
+      "comprovante": "comprovante_qpu_dados_ibm_20261119_173507.json",
+      "backend": "ibm_marrakesh",
+      "modo": "ibm",
+      "resultado": "kernel quântico 80% · clássico 80%",
+      "jobs": [
+        "dbvls2lhdvas73bia9ug",
+        "dbvls5thdvas73biaa70"
+      ],
+      "uso_qpu_s": null,
+      "verificado": true
+    },
+    {
+      "experimento": "evolucao",
+      "comprovante": "comprovante_qpu_evolucao_ibm_20261119_173507.json",
+      "backend": "ibm_marrakesh",
+      "modo": "ibm",
+      "resultado": "campeão 93% · circuito padrão 89%",
+      "jobs": [
+        "dbvlsbts2omc73883ta0",
+        "dbvlsethdvas73biaaqg",
+        "dbvlsi6q4uuc73a1d9u0",
+        "dbvlsm6q4uuc73a1da90"
+      ],
+      "uso_qpu_s": null,
+      "verificado": true
+    }
+  ],
+  "sha256_conteudo": "844e52080d5152b98de19113a32fc876611af0f19726bc697170c9d6505ba26b"
+}

@@ -1,0 +1,155 @@
+{
+  "formato": "quirios.comprovante_qpu",
+  "tipo": "memoria",
+  "versao_quirios": "0.8.0",
+  "modo": "ruidoso",
+  "backend": "aer_simulator_from(fake_kingston)",
+  "data": "2026-10-22T21:41:17",
+  "jobs": [
+    {
+      "job_id": "5b79f8e7-9c2d-4831-889b-27391f80953b",
+      "tipo": "memoria-bell",
+      "backend": "aer_simulator_from(fake_kingston)",
+      "modo": "ruidoso",
+      "circuitos": 640,
+      "shots": 1,
+      "registrado_em": "2026-10-22T21:39:08",
+      "contagens_sha256": "7691e25aa5f6ce1fb21a4e54b5fb7418d80321813b8bb54312b3bdc98f7f02c0"
+    },
+    {
+      "job_id": "b7218c8a-d145-4c84-803e-066a58651a2e",
+      "tipo": "memoria-uma-copia",
+      "backend": "aer_simulator_from(fake_kingston)",
+      "modo": "ruidoso",
+      "circuitos": 1280,
+      "shots": 1,
+      "registrado_em": "2026-10-22T21:41:17",
+      "contagens_sha256": "bb9ab06babee623ba8b1be2ed210aee1237860031b4a49a9440ba4377b798b5c"
+    }
+  ],
+  "n_qubits": 4,
+  "instancias": 20,
+  "eps": 0.9,
+  "eps_decodificacao": 0.6,
+  "copias_por_estado": {
+    "com_memoria": 64,
+    "sem_memoria": 64
+  },
+  "acuracia": {
+    "com_memoria_quantica": 1.0,
+    "sem_memoria": 0.55,
+    "ic95_com_memoria": [
+      0.8388698745050667,
+      1.0
+    ],
+    "ic95_sem_memoria": [
+      0.3420820083075997,
+      0.7418049791429071
+    ]
+  },
+  "por_estado": [
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.759379286178168,
+      "p_simetrico_sem_memoria": 0.582039874683206
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.4056442444055612,
+      "p_simetrico_sem_memoria": 0.5963807356387083
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.6992812836056028,
+      "p_simetrico_sem_memoria": 0.4947863639968745
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.01782921778853404,
+      "p_simetrico_sem_memoria": 0.5350680872890257
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.32432497940296956,
+      "p_simetrico_sem_memoria": 0.503757733586797
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.9631916865703283,
+      "p_simetrico_sem_memoria": 0.5290417481603182
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.17275716675130096,
+      "p_simetrico_sem_memoria": 0.4902545834911279
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.4698203719333032,
+      "p_simetrico_sem_memoria": 0.5080817616743953
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.006804131710885963,
+      "p_simetrico_sem_memoria": 0.5509855665637939
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.9538446498973128,
+      "p_simetrico_sem_memoria": 0.4887584607440138
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.8104750953763553,
+      "p_simetrico_sem_memoria": 0.6022280730205399
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.9521599393322762,
+      "p_simetrico_sem_memoria": 0.5516228190719825
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.23830291156440356,
+      "p_simetrico_sem_memoria": 0.49997426572607423
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.4068909090218426,
+      "p_simetrico_sem_memoria": 0.5295307355182556
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.2516572104339219,
+      "p_simetrico_sem_memoria": 0.49731887489166426
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.9675224296374405,
+      "p_simetrico_sem_memoria": 0.5305975621752211
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.9351823454884215,
+      "p_simetrico_sem_memoria": 0.8205467059836615
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.8896647838301409,
+      "p_simetrico_sem_memoria": 0.4773144231586367
+    },
+    {
+      "simetrico": false,
+      "p_simetrico_com_memoria": 0.1418535164822496,
+      "p_simetrico_sem_memoria": 0.32999612478503715
+    },
+    {
+      "simetrico": true,
+      "p_simetrico_com_memoria": 0.7868288721348415,
+      "p_simetrico_sem_memoria": 0.5746804284727811
+    }
+  ],
+  "circuito_com_memoria_exemplo_qasm3": "OPENQASM 3.0;\ninclude \"stdgates.inc\";\nbit[8] meas;\nqubit[8] q;\nx q[3];\ncx q[1], q[0];\ncx q[2], q[0];\ncx q[3], q[0];\nh q[0];\ns q[0];\nh q[2];\ns q[2];\nh q[3];\nx q[5];\nx q[7];\ncx q[5], q[4];\ncx q[6], q[4];\ncx q[7], q[4];\nh q[4];\ns q[4];\nh q[6];\ns q[6];\nh q[7];\ncx q[0], q[4];\nh q[0];\ncx q[1], q[5];\nh q[1];\ncx q[2], q[6];\nh q[2];\ncx q[3], q[7];\nh q[3];\nbarrier q[0], q[1], q[2], q[3], q[4], q[5], q[6], q[7];\nmeas[0] = measure q[0];\nmeas[1] = measure q[1];\nmeas[2] = measure q[2];\nmeas[3] = measure q[3];\nmeas[4] = measure q[4];\nmeas[5] = measure q[5];\nmeas[6] = measure q[6];\nmeas[7] = measure q[7];\n",
+  "circuito_sem_memoria_exemplo_qasm3": "OPENQASM 3.0;\ninclude \"stdgates.inc\";\nbit[4] meas;\nqubit[4] q;\nx q[1];\nx q[2];\ncx q[1], q[0];\ncx q[2], q[0];\ncx q[3], q[0];\nh q[0];\ns q[0];\nh q[2];\ns q[2];\nh q[3];\nh q[1];\nbarrier q[0], q[1], q[2], q[3];\nmeas[0] = measure q[0];\nmeas[1] = measure q[1];\nmeas[2] = measure q[2];\nmeas[3] = measure q[3];\n",
+  "sha256_conteudo": "9e022abfdb063accc460aa4e500d1eaf7e486451a0692536596cb1aba1688be8"
+}

@@ -1,0 +1,98 @@
+{
+  "formato": "quirios.comprovante_qpu",
+  "tipo": "evolucao",
+  "versao_quirios": "0.8.0",
+  "modo": "ruidoso",
+  "backend": "aer_simulator_from(fake_kingston)",
+  "data": "2026-10-22T20:58:58",
+  "resumo": "Evolução quântica: gerador de 16 qubits (15,552 arquiteturas em superposição), backend qiskit-ruidoso-ibm_kingston\n  entropia da população: 16.0 -> 11.3 bits\n  melhor: 95.9% (angulo/rz-ry-rz/cz/blocosx0/rep1/z_zz, 0 portas 2q) | padrão: 92.6%\n  ligação aprendida: repeticoes_dados <-> rotacoes (informação mútua 0.395 bits)\n  ligação aprendida: camada_pos <-> escala_alpha (informação mútua 0.074 bits)\n  ligação aprendida: topologia <-> n_camadas_ent (informação mútua 0.019 bits)",
+  "jobs": [
+    {
+      "job_id": "541f8328-fcc3-4b22-bde2-5e31a2d58fd6",
+      "tipo": "amostragem",
+      "backend": "aer_simulator_from(fake_kingston)",
+      "modo": "ruidoso",
+      "circuitos": 1,
+      "shots": 24,
+      "registrado_em": "2026-10-22T20:58:27",
+      "contagens_sha256": "dd6e667cbc15fe9393e897e95419bae00e08345a8e2398c3d827a58cd1b63c0f"
+    },
+    {
+      "job_id": "16cdc6a4-5de5-4301-9424-6304741694ce",
+      "tipo": "amostragem",
+      "backend": "aer_simulator_from(fake_kingston)",
+      "modo": "ruidoso",
+      "circuitos": 1,
+      "shots": 24,
+      "registrado_em": "2026-10-22T20:58:46",
+      "contagens_sha256": "a0996341ae043205c644f5c542cd8493bd85db7866ad331de27891cbed91f6b1"
+    },
+    {
+      "job_id": "1e0394fd-7c6f-40f7-a6bb-9233be26b541",
+      "tipo": "amostragem",
+      "backend": "aer_simulator_from(fake_kingston)",
+      "modo": "ruidoso",
+      "circuitos": 1,
+      "shots": 24,
+      "registrado_em": "2026-10-22T20:58:56",
+      "contagens_sha256": "9f2f92257eb02b9d91ff000a50bcd7b9d7b70cb51dc8961bbe903635561571b3"
+    }
+  ],
+  "geracoes": [
+    {
+      "geracao": 0,
+      "melhor_acuracia": 0.958779761904762,
+      "entropia_bits": 16.0,
+      "genomas_distintos": 24,
+      "ligacao_max_bits": 6.00642469465297e-17
+    },
+    {
+      "geracao": 1,
+      "melhor_acuracia": 0.958779761904762,
+      "entropia_bits": 13.70557285608314,
+      "genomas_distintos": 24,
+      "ligacao_max_bits": 0.1670144424974426
+    },
+    {
+      "geracao": 2,
+      "melhor_acuracia": 0.958779761904762,
+      "entropia_bits": 11.301840195699025,
+      "genomas_distintos": 24,
+      "ligacao_max_bits": 0.39534729081865777
+    }
+  ],
+  "melhor": {
+    "descricao": "angulo/rz-ry-rz/cz/blocosx0/rep1/z_zz",
+    "acuracia_cv": 0.958779761904762,
+    "portas_2q": 0
+  },
+  "padrao": {
+    "acuracia_cv": 0.9258928571428571
+  },
+  "ligacoes": [
+    {
+      "genes": [
+        "repeticoes_dados",
+        "rotacoes"
+      ],
+      "bits": 0.39534729081865777
+    },
+    {
+      "genes": [
+        "camada_pos",
+        "escala_alpha"
+      ],
+      "bits": 0.07354857233547869
+    },
+    {
+      "genes": [
+        "topologia",
+        "n_camadas_ent"
+      ],
+      "bits": 0.018976240039253328
+    }
+  ],
+  "circuito_gerador_qasm3": "OPENQASM 3.0;\ninclude \"stdgates.inc\";\ngate rzz(p0) _gate_q_0, _gate_q_1 {\n  cx _gate_q_0, _gate_q_1;\n  rz(p0) _gate_q_1;\n  cx _gate_q_0, _gate_q_1;\n}\nbit[16] meas;\nqubit[16] q;\nry(1.2897802591603955) q[0];\nry(2.141072681167825) q[1];\nry(0.6138659277441889) q[2];\nry(1.4458453944509662) q[3];\nry(0.5466828904257406) q[4];\nry(1.7764110546619232) q[5];\nry(1.607061144321757) q[6];\nry(2.346685143690545) q[7];\nry(1.6227365891105887) q[8];\nry(1.1173398131799788) q[9];\nry(0.5744251380772795) q[10];\nry(1.3018864304691768) q[11];\nry(0.5585250002564338) q[12];\nry(1.3597115057078821) q[13];\nry(1.0098507456863997) q[14];\nry(1.7582180302914552) q[15];\nrzz(0.37939592751738416) q[0], q[1];\nrzz(-0.6939696079254614) q[1], q[2];\nrzz(-1.303002794926626) q[2], q[3];\nrzz(-1.5215983591198288) q[3], q[4];\nrzz(1.0991912399901222) q[4], q[5];\nrzz(1.3948890307434667) q[5], q[6];\nrzz(0.2982420153004329) q[6], q[7];\nrzz(0.6361610315109381) q[7], q[8];\nrzz(0.41219083679859647) q[8], q[9];\nrzz(1.2162915982668447) q[9], q[10];\nrzz(0.9947241321639098) q[10], q[11];\nrzz(-1.589172722804567) q[11], q[12];\nrzz(1.1397609259898496) q[12], q[13];\nrzz(-1.573402040729126) q[13], q[14];\nrzz(0.8395510274095921) q[14], q[15];\nrzz(-0.9890083972343832) q[15], q[0];\nry(-0.19640160548056623) q[0];\nry(0.29855477471781666) q[1];\nry(-0.3036365525584398) q[2];\nry(0.03424758223319058) q[3];\nry(0.0004088243809935608) q[4];\nry(-0.7639704256596515) q[5];\nry(0.37500144649670336) q[6];\nry(0.31561963767621537) q[7];\nry(0.23842252307836329) q[8];\nry(-0.40111564493941726) q[9];\nry(-0.21165518459699875) q[10];\nry(-0.3387249256139253) q[11];\nry(0.17341282708929376) q[12];\nry(-0.04597857460179293) q[13];\nry(0.45676012540460165) q[14];\nry(0.09042037406237055) q[15];\nbarrier q[0], q[1], q[2], q[3], q[4], q[5], q[6], q[7], q[8], q[9], q[10], q[11], q[12], q[13], q[14], q[15];\nmeas[0] = measure q[0];\nmeas[1] = measure q[1];\nmeas[2] = measure q[2];\nmeas[3] = measure q[3];\nmeas[4] = measure q[4];\nmeas[5] = measure q[5];\nmeas[6] = measure q[6];\nmeas[7] = measure q[7];\nmeas[8] = measure q[8];\nmeas[9] = measure q[9];\nmeas[10] = measure q[10];\nmeas[11] = measure q[11];\nmeas[12] = measure q[12];\nmeas[13] = measure q[13];\nmeas[14] = measure q[14];\nmeas[15] = measure q[15];\n",
+  "n_qubits_gerador": 16,
+  "sha256_conteudo": "cd7b354d3bfdfd3db70a5c1142eabb16c5c24618f06c0da9f0ba64dc6fee13d1"
+}

@@ -1,0 +1,6 @@
+# Comprovantes assinados: a assinatura ML-DSA vale para os bytes exatos do arquivo.
+# Sem isto, o git trocaria os finais de linha (CRLF <-> LF) ao baixar em outro sistema
+# e a assinatura deixaria de conferir, mesmo sem ninguém ter alterado nada.
+resultados/**/*.json -text
+resultados/**/*.sig -text
+resultados/**/*.pem -text

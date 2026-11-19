@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=77.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quirios-engine"
+version = "0.8.0"
+description = "Infrastructure between classical and quantum software: quantum-memory learning measured on real IBM processors, tensor-network AI, statistical classical/quantum orchestration and post-quantum signed proofs"
+readme = "README.md"
+license = "LicenseRef-Proprietary"
+license-files = ["LICENSE"]
+authors = [{name = "Matheus Willian Biagioni Assis"}]
+requires-python = ">=3.10"
+keywords = ["quantum", "quantum machine learning", "vqc", "qiskit", "quantum architecture search",
+            "quantum kernel", "error mitigation", "mcp", "post-quantum"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "numpy>=1.24",
+    "numba>=0.58",
+    "threadpoolctl>=3.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/matheusStark25/quirios-engine"
+
+[project.optional-dependencies]
+classico = ["scikit-learn>=1.3"]
+qiskit = ["qiskit>=1.0", "qiskit-aer>=0.13", "qiskit-ibm-runtime>=0.40", "scikit-learn>=1.3"]
+api = ["fastapi>=0.110", "uvicorn>=0.29", "pydantic>=2.0"]
+mcp = ["mcp>=2.0"]
+pqc = ["cryptography>=48"]
+# IQM Resonance: num ambiente SEPARADO (o iqm-client fixa o Qiskit 2.1 e rebaixaria o extra "qiskit")
+iqm = ["iqm-client[qiskit]>=37", "scikit-learn>=1.3"]
+ia = ["torch>=2.2", "scikit-learn>=1.3", "transformers>=4.45", "datasets>=2.18"]
+ibm = ["qiskit>=1.0", "qiskit-aer>=0.13", "qiskit-ibm-runtime>=0.40", "qiskit-addon-obp>=0.3",
+       "qiskit-addon-utils>=0.4"]
+dev = ["pytest>=7.4", "httpx>=0.27", "build>=1.0"]
+
+[project.scripts]
+quirios-mcp = "quirios_engine.mcp_servidor:main"
+quirios-evolucao = "quirios_engine.evolucao:main"
+quirios-benchmark = "quirios_engine.benchmark:main"
+quirios-dados-quanticos = "quirios_engine.dados_quanticos:main"
+quirios-memoria-quantica = "quirios_engine.memoria_quantica:main"
+quirios-conta-ibm = "quirios_engine.conta_ibm:main"
+quirios-redes-tensoriais = "quirios_engine.redes_tensoriais:main"
+quirios-ia-tensorial = "quirios_engine.ia_tensorial:main"
+quirios-forja = "quirios_engine.forja:main"
+quirios-llm-tensorial = "quirios_engine.llm_tensorial:main"
+quirios-llm-nativo = "quirios_engine.llm_nativo:main"
+quirios-protecao = "quirios_engine.protecao:main"
+quirios-agendar = "quirios_engine.agendamento:main"
+
+[tool.setuptools.packages.find]
+include = ["quirios_engine*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra -m 'not e2e and not stress'"
+markers = [
+    "e2e: ponta a ponta contra o sistema real (servidor HTTP, linhas de comando, MCP) -- pytest -m e2e",
+    "stress: carga, concorrência e entradas malformadas -- pytest -m stress -s",
+]

@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# cache do numba (@njit(cache=True))
+*.nbi
+*.nbc
+
+# ambientes
+.venv/
+venv/
+.env
+
+# testes
+.pytest_cache/
+.coverage
+htmlcov/
+
+# resultados gerados por exemplos/rodar_na_ibm.py
+resultado_*.json
+
+# editores / SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# resultados/: os comprovantes JSON entram (são a prova dos números);
+# o pacote .whl, os modelos .pt e a cópia do notebook saem de novo a qualquer hora
+resultados/**/*.whl
+resultados/**/*.pt
+resultados/kaggle/*.ipynb
+!resultados/**/*.json
+
+# segredos: chaves, cofres, trilhas de auditoria e registros locais nunca entram
+*.pem
+!resultados/**/*.pub.pem
+segredos/
+chaves*.json
+*.cofre
+trilha*.jsonl
+*.cabeca.json
+campeoes_quirios.json
