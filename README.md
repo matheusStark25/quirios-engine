@@ -130,8 +130,9 @@ python -m quirios_engine.conta_ibm          # opens a small window to paste your
 python -m quirios_engine.qpu prova          # picks the least busy QPU, asks once, signs every proof
 ```
 
-The HTTP API, the MCP server, the tensor-network AI tools and the Kaggle notebook are documented in
-[README.pt-BR.md](README.pt-BR.md).
+The HTTP API, the MCP server, the tensor-network AI tools and the GPU notebook are documented in
+[README.pt-BR.md](README.pt-BR.md). The language-model experiments run on a free GPU, on Kaggle or here:
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/matheusStark25/quirios-engine/blob/main/exemplos/kaggle_llm_tensorial.ipynb)
 
 ## License
 

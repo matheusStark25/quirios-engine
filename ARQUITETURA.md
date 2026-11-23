@@ -23,7 +23,7 @@ treinado numa CPU comum (precisa de GPU para a "cura"; ver `llm_tensorial.py`);
 e um modelo de linguagem pequeno treinado do zero, em que a rede tensorial
 vence a fatoração clássica (3,94 contra 4,24 bits por caractere com os mesmos
 parâmetros) mas perde para um modelo denso mais estreito (3,71). A versão
-maior desse teste roda na GPU do Kaggle (`exemplos/kaggle_llm_tensorial.ipynb`).
+maior desse teste roda numa GPU grátis, no Kaggle ou no Colab (`exemplos/kaggle_llm_tensorial.ipynb`).
 
 ## Princípios: além de política e de mercado
 

@@ -29,7 +29,7 @@ Cada número deste projeto saiu de uma execução, e cada um diz onde foi medido
 | Prova completa na QPU real: 3 experimentos, 8 jobs, **22 s de QPU**. Dados preparados no chip: empate (80% contra 80%). Evolução sorteada no chip: 92,5% contra 88,7% do circuito padrão (o campeão não usa portas de 2 qubits) | QPU da IBM, comprovantes em `resultados/qpu_real/` |
 | Camada de IA em rede tensorial: MNIST 35× menor, 97,46% contra 97,34% do original | CPU (PyTorch) |
 | Dados clássicos na QPU: foto 128×128 com 68× menos portas de 2 qubits | Circuitos compilados, fidelidade calculada |
-| Modelo de linguagem nativo em rede tensorial | CPU: vence a fatoração clássica, mas perde para um modelo denso mais estreito. GPU: notebook do Kaggle pronto, ainda não rodou |
+| Modelo de linguagem nativo em rede tensorial | CPU: vence a fatoração clássica, mas perde para um modelo denso mais estreito. GPU: notebook pronto (Kaggle ou Colab), ainda não rodou |
 | Proteção (sem chave não sobe, trilha assinada, cofre pós-quântico) | 330 testes, incluindo ataques a cada camada |
 
 **Visão de longo prazo, não resultado:** levar parte do treino de IA dos
@@ -92,7 +92,7 @@ quirios_engine/
 │   └── api.py           API HTTP (FastAPI)
 ├── tests/               suíte pytest (tests/e2e: ponta a ponta e estresse)
 ├── exemplos/            fases_1_a_4.py, fase_5.py, rodar_na_ibm.py, gerar_dados_investidores.py,
-│                        kaggle_llm_tensorial.ipynb (modelos de linguagem na GPU grátis do Kaggle)
+│                        kaggle_llm_tensorial.ipynb (modelos de linguagem na GPU grátis: Kaggle ou Colab)
 ├── ARQUITETURA.md       o que o QURIOS melhora, princípios e camadas
 ├── SEGURANCA.md         ameaças, camadas de proteção e o que fica para a implantação
 └── .github/workflows    CI (Linux e Windows, Python 3.10–3.12)
@@ -832,16 +832,27 @@ TT-SVD desequilibrada (núcleos do meio com entradas minúsculas) e a cura
 divergia; `equilibrar` corrige a escala sem mudar a matriz, e a cura tem uma
 guarda que volta ao último ponto bom se a perda disparar.
 
-**Na GPU grátis do Kaggle** (`exemplos/kaggle_llm_tensorial.ipynb`):
+**Numa GPU grátis** (`exemplos/kaggle_llm_tensorial.ipynb`). O mesmo notebook
+roda no Kaggle, no Google Colab ou num computador com GPU: ele mesmo descobre
+onde está e grava os resultados na pasta certa. Instala o QURIOS direto deste
+GitHub; não precisa subir nada. Parte 1 (Qwen2.5-0.5B comprimido e curado por
+2.000 passos): 40 a 60 min numa T4. Parte 2 (modelo nativo maior): perto de 1 hora.
 
-1. No Kaggle: *New Notebook → File → Import Notebook*, escolha o `.ipynb`.
+*No Kaggle* (roda nos servidores dele, mesmo com o navegador fechado):
+
+1. *New Notebook → File → Import Notebook*, escolha o `.ipynb`.
 2. *Settings*: **Accelerator → GPU T4 x2** e **Internet → On** (a conta
    precisa ter o telefone confirmado).
-3. *Save Version → Save & Run All (Commit)*: o Kaggle roda tudo nos servidores
-   dele, mesmo com o navegador fechado. O notebook instala o QURIOS direto deste
-   GitHub; não precisa subir nada. Parte 1 (Qwen2.5-0.5B comprimido e curado por
-   2.000 passos): 40 a 60 min. Parte 2 (modelo nativo maior): perto de 1 hora.
+3. *Save Version → Save & Run All (Commit)*.
 4. Na aba *Output* da versão: `resultado_llm.json` e `resultado_nativo.json`.
+
+*No Google Colab* (em novembro de 2026 a fila de GPU do Kaggle travou por horas
+para muitos usuários; o Colab é a saída):
+[![Abrir no Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/matheusStark25/quirios-engine/blob/main/exemplos/kaggle_llm_tensorial.ipynb)
+
+1. *Ambiente de execução → Alterar o tipo de ambiente de execução →* **GPU T4**.
+2. *Ambiente de execução →* **Executar tudo**, com a aba aberta até o fim.
+3. Os dois JSON ficam em `/content` e também saem impressos no fim de cada parte.
 
 ### Forja quântica: um circuito quântico desenha a compressão da IA
 
