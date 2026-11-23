@@ -107,12 +107,14 @@ when it turned out the comparison was unfair ([CHANGELOG](CHANGELOG.md)).
 ```
 
 - **One contract, many backends:** IBM Quantum today and IQM Resonance (Finland) prepared; switching vendor is
-  one parameter.
+  one parameter. In a rehearsal with the noise model of IQM's Garnet chip, the same experiment reaches 100% vs
+  45% (McNemar 22 vs 0, p = 5×10⁻⁷) once the noise is calibrated and the copies are prepared without two-qubit
+  gates (the same state on average, verified to 10⁻¹²). *Simulation; the real IQM run is still pending.*
 - **Evidence before promotion:** a quantum model replaces a classical one only when a statistical test says so.
 - **Security built in:** the API refuses to start without a key; scoped, hashed keys; rate limiting and
   brute-force lockout; a hash-chained audit trail with a post-quantum signed head; models stored encrypted with
   ML-KEM-768 + AES-256-GCM; an MCP guard for AI agents. Details in [SEGURANCA.md](SEGURANCA.md).
-- **329 automated tests**, including attacks on every security layer, end-to-end runs against a real HTTP
+- **330 automated tests**, including attacks on every security layer, end-to-end runs against a real HTTP
   server, and stress tests.
 
 ## Quick start

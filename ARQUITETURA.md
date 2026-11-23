@@ -15,7 +15,7 @@ As duas coisas, e cada uma com medida:
 | **Velocidade de IA** | Camadas largas em rede tensorial | 4.096×4.096: 6× / 3,9× / 1,6× mais rápida (lotes 1 / 64 / 1000); 8.192×8.192: 30× / 6,6× / 3,5× |
 | **Aprendizado com dados quânticos** | Memória quântica (duas cópias medidas juntas) | Simulação: 98% contra 49% do melhor clássico com o mesmo número de experimentos (6 qubits). **Em dois chips reais da IBM** (ibm_marrakesh e ibm_kingston, 4 qubits): 93% contra 69% em 100 estados, McNemar p = 0,00002, comprovantes assinados |
 | **Circuitos quânticos** | Evolução dentro de um circuito quântico | Mesmo resultado do circuito padrão com 56% menos portas de 2 qubits |
-| **Sistemas** | Decide, com estatística, onde cada tarefa roda (clássico ou quântico); carrega dados clássicos na QPU; protege e prova tudo | Foto 128×128 na QPU com 68× menos portas; 329 testes, incluindo ataques a cada camada de proteção |
+| **Sistemas** | Decide, com estatística, onde cada tarefa roda (clássico ou quântico); carrega dados clássicos na QPU; protege e prova tudo | Foto 128×128 na QPU com 68× menos portas; 330 testes, incluindo ataques a cada camada de proteção |
 
 Onde ele **não** melhora, e a página de evidências mostra: fases de Ising
 com informação local (o clássico vence); comprimir um modelo de linguagem já

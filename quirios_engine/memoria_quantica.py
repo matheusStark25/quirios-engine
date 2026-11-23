@@ -166,12 +166,49 @@ def _bits_da_copia(n, x, z, eps, rng):
     return (bits & ~(1 << k)) | (pivo << k)
 
 
-def circuito_com_memoria(n, x, z, eps, rng):
-    """Duas cópias (qubits 0..n-1 e n..2n-1) medidas juntas na base de Bell."""
+def _preparar_produto(qc, qubits, x, z, bits):
+    """Uma cópia de rho_P SEM portas de 2 qubits: cada qubit do suporte de P vai para
+    um autoestado do seu Pauli (bit 1 = autovalor -1) e os outros para |bit>. Como
+    P = produto dos Paulis de cada qubit, o autovalor de P é (-1)^(paridade dos bits
+    do suporte); sorteando essa paridade como em _bits_produto, a média é exatamente
+    (I + eps P)/2^n, o mesmo estado do preparo com CNOTs, com muito menos ruído."""
+    for q in range(len(qubits)):
+        if (bits >> q) & 1:
+            qc.x(qubits[q])
+        xq, zq = (x >> q) & 1, (z >> q) & 1
+        if xq and not zq:
+            qc.h(qubits[q])                            # |0>,|1> -> |+>,|->  (autoestados de X)
+        elif xq and zq:
+            qc.h(qubits[q]); qc.s(qubits[q])           # |0>,|1> -> |+i>,|-i> (autoestados de Y)
+
+
+def _bits_produto(n, x, z, eps, rng):
+    """Bits do preparo sem CNOT: a paridade dos bits do suporte é 0 (autovalor +1 de P)
+    com probabilidade (1 + eps)/2; dentro disso, todos os bits são uniformes."""
+    sup = [q for q in range(n) if ((x | z) >> q) & 1]
+    bits = int(rng.integers(0, 1 << n))
+    alvo = 0 if rng.random() < (1 + eps) / 2 else 1
+    if (bin(bits & (x | z)).count("1") & 1) != alvo:
+        bits ^= 1 << sup[0]
+    return bits
+
+
+def _uma_copia(qc, qubits, n, x, z, eps, rng, preparo):
+    if preparo == "produto":
+        _preparar_produto(qc, qubits, int(x), int(z), _bits_produto(n, int(x), int(z), eps, rng))
+    elif preparo == "cnot":
+        _preparar(qc, qubits, int(x), int(z), _bits_da_copia(n, x, z, eps, rng))
+    else:
+        raise ValueError("preparo deve ser 'cnot' ou 'produto'")
+
+
+def circuito_com_memoria(n, x, z, eps, rng, preparo="cnot"):
+    """Duas cópias (qubits 0..n-1 e n..2n-1) medidas juntas na base de Bell.
+    preparo="produto" fabrica as cópias sem portas de 2 qubits (mesmo estado médio)."""
     from qiskit import QuantumCircuit
     qc = QuantumCircuit(2 * n)
-    _preparar(qc, list(range(n)), int(x), int(z), _bits_da_copia(n, x, z, eps, rng))
-    _preparar(qc, list(range(n, 2 * n)), int(x), int(z), _bits_da_copia(n, x, z, eps, rng))
+    _uma_copia(qc, list(range(n)), n, x, z, eps, rng, preparo)
+    _uma_copia(qc, list(range(n, 2 * n)), n, x, z, eps, rng, preparo)
     for i in range(n):
         qc.cx(i, n + i)
         qc.h(i)
@@ -186,11 +223,11 @@ def pauli_de_bell(contagem, n):
     return (sum(bit(n + i) << i for i in range(n)), sum(bit(i) << i for i in range(n)))
 
 
-def circuito_sem_memoria(n, x, z, eps, xb, zb, rng):
+def circuito_sem_memoria(n, x, z, eps, xb, zb, rng, preparo="cnot"):
     """Uma cópia medida sozinha na base de Pauli (xb, zb)."""
     from qiskit import QuantumCircuit
     qc = QuantumCircuit(n)
-    _preparar(qc, list(range(n)), int(x), int(z), _bits_da_copia(n, x, z, eps, rng))
+    _uma_copia(qc, list(range(n)), n, x, z, eps, rng, preparo)
     for q in range(n):
         xq, zq = (int(xb) >> q) & 1, (int(zb) >> q) & 1
         if xq and zq:

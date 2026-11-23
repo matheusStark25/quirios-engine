@@ -248,7 +248,7 @@ def _calibrar_eps(inst, medidas, bases, n, grade=GRADE_EPS):
 
 
 def memoria_na_qpu(backend, n_qubits=4, instancias=12, copias=32, eps=0.9, eps_decodificacao=None, seed=0,
-                   calibracao=0):
+                   calibracao=0, preparo="cnot"):
     """Os estados rho_P = (I + eps P)/2^n são preparados na QPU (cada disparo
     é uma cópia nova da fonte). Com memória: c/2 experimentos de 2 cópias
     medidas juntas na base de Bell. Sem memória: c cópias medidas uma a uma em
@@ -257,7 +257,10 @@ def memoria_na_qpu(backend, n_qubits=4, instancias=12, copias=32, eps=0.9, eps_d
     calibracao=K: K estados extras, no mesmo job (mesmo chip, mesma calibração da
     IBM), servem só para medir quanto sinal o ruído deixa, separadamente para cada
     lado; a acurácia é medida só nos `instancias` estados de teste, que não entram na
-    calibração. Sem ela, os dois lados usam eps_decodificacao (0,6 fora do ideal)."""
+    calibração. Sem ela, os dois lados usam eps_decodificacao (0,6 fora do ideal).
+
+    preparo="produto": as cópias saem sem portas de 2 qubits (mesmo estado médio; ver
+    memoria_quantica._preparar_produto). Os dois lados recebem cópias feitas do mesmo jeito."""
     from .memoria_quantica import (_wilson, bases_aleatorias, circuito_com_memoria, circuito_sem_memoria,
                                    decidir_com_memoria, decidir_sem_memoria, sortear_instancias)
     rng = np.random.default_rng(seed)
@@ -268,10 +271,10 @@ def memoria_na_qpu(backend, n_qubits=4, instancias=12, copias=32, eps=0.9, eps_d
     inst = cal + teste                                              # calibração primeiro, no mesmo job
     circ_q, circ_c, bases = [], [], []
     for x, z, _ in inst:
-        circ_q += [circuito_com_memoria(n, x, z, eps, rng) for _ in range(m)]
+        circ_q += [circuito_com_memoria(n, x, z, eps, rng, preparo) for _ in range(m)]
         xb, zb = bases_aleatorias(copias, n, rng)
         bases.append((xb, zb))
-        circ_c += [circuito_sem_memoria(n, x, z, eps, a, b, rng) for a, b in zip(xb, zb)]
+        circ_c += [circuito_sem_memoria(n, x, z, eps, a, b, rng, preparo) for a, b in zip(xb, zb)]
     cont_q = backend.amostrar_lote(circ_q, 1, tipo="memoria-bell")
     cont_c = backend.amostrar_lote(circ_c, 1, tipo="memoria-uma-copia")
     medidas = _medidas_por_estado(inst, cont_q, cont_c, n, m, copias)
@@ -295,7 +298,7 @@ def memoria_na_qpu(backend, n_qubits=4, instancias=12, copias=32, eps=0.9, eps_d
     ac_q, ac_c = sum(certo_q), sum(certo_c)
     so_q, so_c, p = mcnemar(certo_q, certo_c)
     return dict(_base("memoria", backend),
-                jobs=list(backend.registro_jobs), n_qubits=n, instancias=instancias, eps=eps,
+                jobs=list(backend.registro_jobs), n_qubits=n, instancias=instancias, eps=eps, preparo=preparo,
                 eps_decodificacao={"com_memoria": eps_q, "sem_memoria": eps_c} if K else eps_dec,
                 copias_por_estado={"com_memoria": 2 * m, "sem_memoria": copias}, **extra,
                 acuracia={"com_memoria_quantica": ac_q / instancias, "sem_memoria": ac_c / instancias,
@@ -334,6 +337,8 @@ def _parser():
     pm.add_argument("--instancias", type=int, default=12)
     pm.add_argument("--copias", type=int, default=32)
     pm.add_argument("--eps-decodificacao", type=float, default=None)
+    pm.add_argument("--preparo", choices=["cnot", "produto"], default="cnot",
+                    help="produto: cópias sem portas de 2 qubits (mesmo estado, menos ruído)")
     pm.add_argument("--calibracao", type=int, default=0,
                     help="estados extras, fora do teste, para medir o ruído real do chip (mesmo job)")
     pv = sub.add_parser("verificar")
@@ -380,7 +385,7 @@ def _executar(a, assinador=None):
     elif a.acao == "memoria":
         b = _backend(a.modo, a.dispositivo, shots=1)
         comp = memoria_na_qpu(b, a.n_qubits, a.instancias, a.copias, eps_decodificacao=a.eps_decodificacao,
-                              seed=a.seed, calibracao=a.calibracao)
+                              seed=a.seed, calibracao=a.calibracao, preparo=a.preparo)
         print(json.dumps(comp["acuracia"], indent=2, ensure_ascii=False))
     else:
         b = _backend(a.modo, a.dispositivo, shots=a.shots)
@@ -410,7 +415,7 @@ def _destaque(d):
     return ""
 
 
-COMPLETA = {"memoria": ["--instancias", "40", "--copias", "64", "--calibracao", "20"],   # ruído medido no chip
+COMPLETA = {"memoria": ["--instancias", "40", "--copias", "64", "--calibracao", "20", "--preparo", "produto"],
             "dados": [], "evolucao": []}
 PEQUENA = {"memoria": ["--instancias", "4", "--copias", "8", "--calibracao", "4"],
            "dados": ["--sistemas", "8", "--shots", "20"],

@@ -43,6 +43,46 @@ def test_circuitos_reproduzem_a_teoria_exatamente():
             assert abs(p - (1 + eps ** 2 * s * int(mq.comuta(x, z, qx, qz))) / 4 ** n) < 1e-12
 
 
+def test_preparo_sem_cnot_e_o_mesmo_estado_e_a_mesma_medida_de_bell():
+    # Cada cópia como mistura de estados produto (autoestados de cada Pauli): na média,
+    # exatamente (I + eps P)/2^n para todo P de 2 qubits, sem nenhuma porta de 2 qubits.
+    pytest.importorskip("qiskit")
+    from qiskit import QuantumCircuit
+    from qiskit.quantum_info import DensityMatrix, Pauli, Statevector
+    n, eps = 2, 0.9
+    for x, z in zip(*mq.todos_paulis(n)):
+        x, z = int(x), int(z)
+        alvo = (np.eye(2 ** n) + eps * Pauli(mq.nome_pauli(x, z, n)[::-1]).to_matrix()) / 2 ** n
+        rho = np.zeros((2 ** n, 2 ** n), complex)
+        for bits in range(2 ** n):
+            par = bin(bits & (x | z)).count("1") & 1
+            w = ((1 + eps) / 2 if par == 0 else (1 - eps) / 2) / 2 ** (n - 1)
+            qc = QuantumCircuit(n)
+            mq._preparar_produto(qc, list(range(n)), x, z, bits)
+            assert qc.num_nonlocal_gates() == 0
+            v = Statevector(qc).data
+            rho += w * np.outer(v, v.conj())
+        assert np.abs(rho - alvo).max() < 1e-12
+        med = QuantumCircuit(2 * n)
+        for i in range(n):
+            med.cx(i, n + i)
+            med.h(i)
+        s = int(mq.simetria_T(x, z))
+        for chave, p in DensityMatrix(np.kron(rho, rho)).evolve(med).probabilities_dict().items():
+            qx, qz = mq.pauli_de_bell(chave, n)
+            assert abs(p - (1 + eps ** 2 * s * int(mq.comuta(x, z, qx, qz))) / 4 ** n) < 1e-12
+    rng = np.random.default_rng(0)
+    x, z = 0b1011, 0b1110                                         # peso 4: o preparo com CNOT usaria 3 por cópia
+    assert mq.circuito_sem_memoria(4, x, z, eps, 1, 2, rng, preparo="produto").num_nonlocal_gates() == 0
+    assert mq.circuito_com_memoria(4, x, z, eps, rng, preparo="produto").num_nonlocal_gates() == 4   # só a de Bell
+    assert mq.circuito_com_memoria(4, x, z, eps, rng).num_nonlocal_gates() == 10                    # 3 + 3 + 4
+    # a paridade sorteada segue (1 + eps)/2
+    pares = [bin(mq._bits_produto(4, x, z, 0.6, rng) & (x | z)).count("1") & 1 for _ in range(4000)]
+    assert abs(pares.count(0) / 4000 - 0.8) < 0.03
+    with pytest.raises(ValueError):
+        mq.circuito_sem_memoria(4, x, z, eps, 1, 2, rng, preparo="magico")
+
+
 def test_amostradores_respeitam_a_estrutura():
     rng = np.random.default_rng(0)
     x, z = 0b011, 0b110                                           # X Y Z em 3 qubits: um Y -> antissimétrico

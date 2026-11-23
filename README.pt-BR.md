@@ -30,7 +30,7 @@ Cada número deste projeto saiu de uma execução, e cada um diz onde foi medido
 | Camada de IA em rede tensorial: MNIST 35× menor, 97,46% contra 97,34% do original | CPU (PyTorch) |
 | Dados clássicos na QPU: foto 128×128 com 68× menos portas de 2 qubits | Circuitos compilados, fidelidade calculada |
 | Modelo de linguagem nativo em rede tensorial | CPU: vence a fatoração clássica, mas perde para um modelo denso mais estreito. GPU: notebook do Kaggle pronto, ainda não rodou |
-| Proteção (sem chave não sobe, trilha assinada, cofre pós-quântico) | 329 testes, incluindo ataques a cada camada |
+| Proteção (sem chave não sobe, trilha assinada, cofre pós-quântico) | 330 testes, incluindo ataques a cada camada |
 
 **Visão de longo prazo, não resultado:** levar parte do treino de IA dos
 clusters de GPU para processadores quânticos, quando o hardware permitir.
@@ -698,10 +698,32 @@ acerta só 58% (chute é 50%). No ensaio com o modelo de ruído do ibm_kingston
 acertou **100%** (IC95 de 84% a 100%) e sem memória, 55% (IC95 de 34% a 74%).
 Rodando de novo, deu 95% contra 55%: o compilador escolhia os qubits de um
 jeito diferente a cada execução (agora a semente é fixa), e o intervalo de
-confiança cobre as duas. **Com o ruído do chip Garnet da IQM** (mesmo
-experimento, `--dispositivo iqm_garnet`), a vantagem quase some: 75% contra
-70% com 64 cópias, e 60% contra 45% com 32. Para a IQM o circuito ainda
-precisa ser ajustado ao chip antes de valer a pena gastar os créditos.
+confiança cobre as duas.
+
+**No chip Garnet da IQM (ensaio com o modelo de ruído dele):** na primeira
+versão a vantagem quase sumia (75% contra 70%, sem calibração, 20 estados). Duas
+mudanças resolveram, sempre com o mesmo número de cópias para os dois lados:
+
+| Ensaio, 4 qubits, 64 cópias, 40 estados de teste + 20 de calibração | Com memória | Sem memória | McNemar |
+|---|---|---|---|
+| IQM Garnet, preparo com CNOT | 85% | 50% | 15 contra 1, p = 0,0005 |
+| **IQM Garnet, preparo sem CNOT** | **100%** | **45%** | **22 contra 0, p = 5×10⁻⁷** |
+| IBM Kingston, preparo sem CNOT | 100% | 62,5% | 15 contra 0, p = 0,00006 |
+
+1. **Calibração do ruído** (`--calibracao 20`): no Garnet o ruído deixa só 0,05
+   do sinal no lado sem memória. Sem medir isso, o decodificador supunha 0,6 e se
+   perdia. Na IBM ela quase não mudava nada; na IQM é essencial.
+2. **Preparo sem portas de 2 qubits** (`--preparo produto`): o estado
+   ρ = (I + εP)/2ⁿ também é uma mistura de estados produto, com cada qubit num
+   autoestado do seu Pauli e a paridade sorteada. Na média é **exatamente** o
+   mesmo estado (conferido até 10⁻¹² em `tests/test_memoria_quantica.py`), e o
+   circuito com memória cai de 10 para 4 portas de 2 qubits num Pauli de peso 4:
+   sobram só as da medida de Bell. Os dois lados recebem cópias feitas do mesmo jeito.
+
+A `prova` completa usa as duas. O comando avulso `qpu memoria` continua com o
+preparo com CNOT por padrão, para os comprovantes publicados se reproduzirem
+iguais. **Na QPU real da IQM ainda não rodou**: falta a conta (ver "Hardware
+quântico real").
 
 É a família de tarefas em que Huang et al. (*Science* 376, 1182, 2022) e
 Chen, Cotler, Huang e Li (FOCS 2021) provaram separação exponencial entre
@@ -812,14 +834,14 @@ guarda que volta ao último ponto bom se a perda disparar.
 
 **Na GPU grátis do Kaggle** (`exemplos/kaggle_llm_tensorial.ipynb`):
 
-1. Gere o pacote: `python -m build --wheel --outdir resultados/kaggle`.
-2. No Kaggle: *New Notebook → File → Import Notebook*, escolha o `.ipynb`.
-3. *Settings*: **Accelerator → GPU T4 x2** e **Internet → On** (a conta
+1. No Kaggle: *New Notebook → File → Import Notebook*, escolha o `.ipynb`.
+2. *Settings*: **Accelerator → GPU T4 x2** e **Internet → On** (a conta
    precisa ter o telefone confirmado).
-4. *Add Input → Upload*: envie o `.whl` como um dataset chamado `quirios`.
-5. *Run All*. Parte 1 (Qwen2.5-0.5B comprimido e curado por 2.000 passos):
-   40 a 60 min. Parte 2 (modelo nativo maior): perto de 1 hora. Os resultados
-   saem em `resultado_llm.json` e `resultado_nativo.json`.
+3. *Save Version → Save & Run All (Commit)*: o Kaggle roda tudo nos servidores
+   dele, mesmo com o navegador fechado. O notebook instala o QURIOS direto deste
+   GitHub; não precisa subir nada. Parte 1 (Qwen2.5-0.5B comprimido e curado por
+   2.000 passos): 40 a 60 min. Parte 2 (modelo nativo maior): perto de 1 hora.
+4. Na aba *Output* da versão: `resultado_llm.json` e `resultado_nativo.json`.
 
 ### Forja quântica: um circuito quântico desenha a compressão da IA
 
