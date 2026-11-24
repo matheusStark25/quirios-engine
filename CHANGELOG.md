@@ -21,6 +21,11 @@
 ### Modelo nativo: a rede tensorial larga
 - `llm_nativo --tt-larga 768`: treina também uma TT bem mais larga com os mesmos parâmetros da TT comum (`ligacao_equivalente` acha a maior ligação que cabe). É o teste da vantagem própria da rede tensorial: camadas largas por quase nada.
 
+### Memória no Colab grátis (12,7 GB de RAM)
+- Na primeira rodada do notebook novo (24/11/2026), o processo foi morto por falta de RAM (11,8 GB) no 4º método da quantização, depois de 8 bits (perplexidade 18,71 contra 18,72 do original), 4 bits (22,90) e 4 bits guiado pelos dados (21,24). Diagnóstico no próprio Colab: a correção sozinha fica estável (4,6 GB); a RAM vai se acumulando entre um modelo e outro, porque o malloc do Linux guarda o que o Python solta.
+- `llm_tensorial.liberar_memoria()` devolve essa memória ao sistema (`malloc_trim`) depois de cada modelo, na quantização e nos adaptadores (15 cargas do modelo por rodada). Na GPU, as covariâncias das ativações (2,4 GB no Qwen 0,5B) ficam na placa, não na RAM. O SVD branqueado não monta mais a matriz identidade (190 MB a menos por camada grande, mesmo resultado).
+- O notebook mostra a RAM do processo em cada linha de resultado.
+
 ### Notebook (Kaggle ou Colab), três partes
 - Parte 1, quantização do Qwen2.5-0.5B (todas as camadas lineares); parte 2, adaptadores TT contra LoRA, incluindo o LoRA com os mesmos parâmetros e o menor LoRA possível; parte 3, modelo nativo em cinco versões. Cada parte grava o JSON depois de cada modelo, para nada se perder se a sessão cair.
 

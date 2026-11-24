@@ -196,9 +196,10 @@ def svd_branqueado(W, cov, posto, eps=1e-4):
     devolve U S^(1/2) (saida x posto) e S^(1/2) V^T C^-1 (posto x entrada), em float32.
     A conta é sempre na CPU, em float64: o mesmo caminho com ou sem GPU."""
     W = W.detach().cpu().double()
-    cov = cov.detach().cpu().double()
-    S = cov + eps * torch.eye(cov.shape[0], dtype=torch.float64) * cov.diagonal().mean()
+    S = cov.detach().to("cpu", torch.float64, copy=True)          # cópia: o cov de quem chamou não muda
+    S.diagonal().add_(eps * S.diagonal().mean())                  # S = cov + eps média(diag) I, sem matriz identidade
     C = torch.linalg.cholesky(S)
+    del S                                                         # numa camada de 4.864 entradas, 190 MB a menos
     U, s, Vt = torch.linalg.svd(W @ C, full_matrices=False)
     raiz = s[:posto].sqrt()
     A = (U[:, :posto] * raiz).float()

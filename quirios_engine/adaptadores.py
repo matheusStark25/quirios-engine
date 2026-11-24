@@ -155,6 +155,7 @@ def demo(nome=lt.MODELO_PADRAO, configs=(("lora", 8), ("tt", 8), ("tt", 4), ("lo
     reais = [(t, posto_lora_equivalente(modelo, tt_ref, d, alvos) if p == "mesmos" else p, p == "mesmos")
              for t, p in configs]
     del modelo
+    lt.liberar_memoria()
 
     def resultado():
         return {"modelo_base": nome, "tarefa": "everyday-conversations (chat)", "passos": passos, "lote": lote,
@@ -176,6 +177,7 @@ def demo(nome=lt.MODELO_PADRAO, configs=(("lora", 8), ("tt", 8), ("tt", 4), ("lo
                                "perda_final": float(sum(perdas[-20:]) / len(perdas[-20:])),
                                "memoria_gb": _memoria_gb(dispositivo), "treinaveis": n})
             del m
+            lt.liberar_memoria()
         validas = [x for x in tentativas if math.isfinite(x["ppl_validacao"])] or tentativas
         melhor = min(validas, key=lambda x: x["ppl_validacao"])
         rotulo = ("LoRA" if tipo == "lora" else "adaptador TT") + f" posto {posto}" + (

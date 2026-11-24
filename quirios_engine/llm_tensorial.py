@@ -47,6 +47,22 @@ def _disp(modelo):
     return next(modelo.parameters()).device
 
 
+def liberar_memoria():
+    """Devolve ao sistema a memória que o Python já soltou. No Linux (Colab, Kaggle) o malloc
+    guarda os pedaços liberados dentro do processo, e cada modelo carregado ou comprimido
+    deixa o processo maior: na primeira rodada da quantização no Colab ele passou de 11,8 GB
+    de RAM e foi morto no 4º método. malloc_trim devolve esses pedaços; fora do Linux, nada muda."""
+    import gc
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+    try:
+        import ctypes
+        ctypes.CDLL("libc.so.6").malloc_trim(0)
+    except (OSError, AttributeError):
+        pass
+
+
 def carregar(nome=MODELO_PADRAO, dispositivo="cpu"):
     from transformers import AutoModelForCausalLM, AutoTokenizer
     tok = AutoTokenizer.from_pretrained(nome)
@@ -122,8 +138,10 @@ def _lineares(modelo, alvos):
 
 
 @torch.inference_mode()
-def covariancias_de_entrada(modelo, ids, alvos=ALVOS, n_seq=16, seq=256, seed=0):
-    """X^T X das ENTRADAS de cada camada linear, em textos de calibração (uma passada)."""
+def covariancias_de_entrada(modelo, ids, alvos=ALVOS, n_seq=16, seq=256, seed=0, na_cpu=True):
+    """X^T X das ENTRADAS de cada camada linear, em textos de calibração (uma passada).
+    na_cpu=False deixa as matrizes na GPU: no Qwen 0,5B são 2,4 GB que saem da RAM, que
+    no Colab grátis (12,7 GB) é mais apertada que a GPU (15 GB)."""
     g = torch.Generator().manual_seed(seed)
     inicios = torch.randint(0, len(ids) - seq, (n_seq,), generator=g)
     cov, ganchos = {}, []
@@ -138,7 +156,7 @@ def covariancias_de_entrada(modelo, ids, alvos=ALVOS, n_seq=16, seq=256, seed=0)
     finally:
         for h in ganchos:
             h.remove()
-    return {k: (v / (n_seq * seq)).cpu() for k, v in cov.items()}     # libera a GPU para o próximo modelo
+    return {k: (v / (n_seq * seq)).cpu() if na_cpu else v / (n_seq * seq) for k, v in cov.items()}
 
 
 def postobaixo_com_dados(lin, posto, cov, eps=1e-4):
@@ -337,9 +355,11 @@ def demo(nome=MODELO_PADRAO, metodos=("tt",), posto=32, d=3, passos=300, lote=2,
     linhas = [medir("original", modelo, tok, ids_teste, perguntas, max_tokens=max_tokens)]
     janelas, top_p, top_i = (alvos_do_professor(modelo, ids_treino, passos, lote, seq, seed=seed) if curados
                              else ([], [], []))
-    cov = (covariancias_de_entrada(modelo, ids_treino.to(dispositivo), alvos, seed=seed)
+    cov = (covariancias_de_entrada(modelo, ids_treino.to(dispositivo), alvos, seed=seed,
+                                   na_cpu=not str(dispositivo).startswith("cuda"))
            if any(precisa_de_dados(m) for m in metodos) else None)
     del modelo
+    liberar_memoria()
 
     def resultado():
         base = linhas[0]
@@ -373,6 +393,7 @@ def demo(nome=MODELO_PADRAO, metodos=("tt",), posto=32, d=3, passos=300, lote=2,
             torch.save({k: (v.detach().to(torch.bfloat16) if v.is_floating_point() else v.detach())
                         for k, v in modelo.state_dict().items()}, f"{saida}_{metodo.replace('+', '_')}.pt")
         del modelo
+        liberar_memoria()
         if ao_linha:
             ao_linha(resultado())
     return resultado()
