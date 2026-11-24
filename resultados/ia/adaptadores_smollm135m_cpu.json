@@ -157,6 +157,38 @@
      "treinaveis": 915840
     }
    ]
+  },
+  {
+   "modelo": "LoRA posto 1",
+   "tipo": "lora",
+   "posto": 1,
+   "mesmos_parametros_do_tt": false,
+   "treinaveis": 305280,
+   "lr": 0.003,
+   "ppl_validacao": 2.5041615271170974,
+   "ppl_teste": 2.58018541748925,
+   "s_treino": 209.3017654000014,
+   "memoria_gb": null,
+   "tentativas": [
+    {
+     "lr": 0.001,
+     "ppl_validacao": 2.536429258177322,
+     "ppl_teste": 2.6367767476270374,
+     "s_treino": 227.9251095999989,
+     "perda_final": 1.1212406605482101,
+     "memoria_gb": null,
+     "treinaveis": 305280
+    },
+    {
+     "lr": 0.003,
+     "ppl_validacao": 2.5041615271170974,
+     "ppl_teste": 2.58018541748925,
+     "s_treino": 209.3017654000014,
+     "perda_final": 1.1125928074121476,
+     "memoria_gb": null,
+     "treinaveis": 305280
+    }
+   ]
   }
  ],
  "data": "2026-11-24",

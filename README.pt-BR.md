@@ -32,7 +32,7 @@ Cada número deste projeto saiu de uma execução, e cada um diz onde foi medido
 | Quantização guiada pelos dados (4 bits por peso): perda de qualidade cai de +18% para **+7,5%** contra o arredondamento comum; em 3 bits, de +149% para +46% | CPU, SmolLM2-135M |
 | Modelo de linguagem nativo em rede tensorial | CPU: vence a fatoração clássica, mas perde para um modelo denso mais estreito. GPU (T4): denso 1,947 contra TT 2,329 bits/caractere com 6,1× menos parâmetros; a versão completa roda agora |
 | Encolher um modelo pronto com rede tensorial (Qwen 0,5B) | GPU (T4): 1,27× menor, mas a perplexidade vai de 18,7 para 28,7 e a conversa se perde. **Não compete** com a quantização; ficou como pesquisa |
-| Adaptador de ajuste fino em rede tensorial contra LoRA | CPU: com os mesmos parâmetros o **LoRA ganhou** (2,585 contra 2,647); ver a tabela |
+| Adaptador de ajuste fino em rede tensorial contra LoRA | CPU: **o LoRA ganhou** com os mesmos parâmetros (2,585 contra 2,647) e até com o menor tamanho possível (2,580 contra 2,669 do TT) |
 | Proteção (sem chave não sobe, trilha assinada, cofre pós-quântico) | 344 testes, incluindo ataques a cada camada |
 
 **Visão de longo prazo, não resultado:** levar parte do treino de IA dos
@@ -919,14 +919,16 @@ perplexidade no teste, menor é melhor:
 | LoRA posto 3 (mesmos parâmetros do TT 8) | 915.840 | **2,585** | 3,5 min |
 | TT posto 8 | 856.320 | 2,647 | 25,3 min |
 | TT posto 4 | 236.160 | 2,669 | 7,1 min |
+| LoRA posto 1 (o menor possível) | 305.280 | **2,580** | 3,5 min |
 
-Resultado honesto: **com os mesmos parâmetros, o LoRA ganhou** (2,585 contra
-2,647) e treinou 7× mais rápido. O único lugar onde o TT oferece algo que o
-LoRA não tem é abaixo do menor LoRA possível (posto 1, 305.280 parâmetros
-neste modelo): o TT posto 4, com 236.160, guarda 94% da melhora do LoRA
-comum com 10× menos parâmetros. Isso só vale se ele também ganhar do LoRA
-posto 1, medição que roda agora. Treino curto e modelo pequeno: a parte 2
-do notebook repete com o Qwen2.5-0.5B, 300 passos e três taxas por método.
+Resultado honesto: **o adaptador em rede tensorial perdeu em todas as
+comparações.** Com os mesmos parâmetros, o LoRA ganhou (2,585 contra 2,647) e
+treinou 7× mais rápido; e até o menor LoRA possível (posto 1) ficou melhor que
+o TT posto 4 (2,580 contra 2,669). Nesta tarefa curta a correção não precisa
+de capacidade (o LoRA de posto 1 empata com o de posto 8), então o formato da
+rede tensorial não tem o que oferecer. A parte 2 do notebook repete com o
+Qwen2.5-0.5B, 300 passos e três taxas por método; se o resultado se repetir,
+o adaptador TT fica registrado como caminho testado e descartado.
 
 **Numa GPU grátis** (`exemplos/kaggle_llm_tensorial.ipynb`). O mesmo notebook
 roda no Kaggle, no Google Colab ou num computador com GPU: ele mesmo descobre
