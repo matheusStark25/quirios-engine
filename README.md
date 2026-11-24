@@ -82,7 +82,7 @@ processor) and reaches the processor without being measured first. It does **not
 | Loading a classical 128×128 photo into a quantum processor with **68× fewer two-qubit gates** (240 vs 16,369 CNOTs, fidelity 0.952) | Compiled circuits |
 | Full proof run on the real chip: data prepared and classified on the QPU **tied** classical (80% vs 80%); architecture evolution sampled on the QPU reached 92.5% vs 88.7% for the default circuit (the winner uses no two-qubit gates) | ibm_marrakesh |
 | Native tensor-network language model: beats classical low-rank compression (3.94 vs 4.24 bits/char) but **loses** to a narrower dense model (3.71) at this scale | CPU |
-| Data-guided 4-bit weight quantization with a low-rank error correction: quality loss **+7.5%** vs +18% for standard rounding (3-bit: +46% vs +149%). Gain is stored size only; no integer kernel yet | CPU, SmolLM2-135M |
+| Data-guided 4-bit weight quantization with a low-rank error correction **halves the quality loss** of standard rounding: Qwen2.5-0.5B +11% vs +22%, SmolLM2-135M +7.5% vs +18% (3-bit: +62% vs +310%). Gain is stored size only; no integer kernel yet | GPU T4 (Qwen), CPU (SmolLM2) |
 | Shrinking a trained 0.5B model with tensor networks: 1.27× smaller but perplexity 18.7 → 28.7 and chat lost. **Does not compete** with quantization; kept as research | GPU (T4) |
 | Tensor-network fine-tuning adapter vs LoRA: **LoRA wins** at the same trainable parameters (2.585 vs 2.647 test perplexity) and even at its smallest size, rank 1 (2.580 vs 2.669) | CPU, SmolLM2-135M |
 | Ising phases with the same measurement budget for both sides: **classical wins** (−6 to −11 points) | Simulation |

@@ -19,8 +19,8 @@ As duas coisas, e cada uma com medida:
 
 Onde ele melhora a IA de hoje sem precisar de computador quântico: a
 **quantização guiada pelos dados** (`quantizacao.py`) guarda um modelo de
-linguagem em 4 bits por peso perdendo +7,5% de qualidade, contra +18% do
-arredondamento comum (CPU, SmolLM2-135M). O ganho é de tamanho guardado; falta
+linguagem em 4 bits por peso com metade da perda do arredondamento comum:
++11% contra +22% no Qwen2.5-0.5B (GPU T4), +7,5% contra +18% no SmolLM2-135M (CPU). O ganho é de tamanho guardado; falta
 o núcleo de cálculo com inteiros para ganhar memória e velocidade na execução.
 
 Onde ele **não** melhora, e a página de evidências mostra: fases de Ising

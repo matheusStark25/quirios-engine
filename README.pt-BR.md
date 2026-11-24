@@ -29,7 +29,7 @@ Cada número deste projeto saiu de uma execução, e cada um diz onde foi medido
 | Prova completa na QPU real: 3 experimentos, 8 jobs, **22 s de QPU**. Dados preparados no chip: empate (80% contra 80%). Evolução sorteada no chip: 92,5% contra 88,7% do circuito padrão (o campeão não usa portas de 2 qubits) | QPU da IBM, comprovantes em `resultados/qpu_real/` |
 | Camada de IA em rede tensorial: MNIST 35× menor, 97,46% contra 97,34% do original | CPU (PyTorch) |
 | Dados clássicos na QPU: foto 128×128 com 68× menos portas de 2 qubits | Circuitos compilados, fidelidade calculada |
-| Quantização guiada pelos dados (4 bits por peso): perda de qualidade cai de +18% para **+7,5%** contra o arredondamento comum; em 3 bits, de +149% para +46% | CPU, SmolLM2-135M |
+| Quantização guiada pelos dados (4 bits por peso): a perda de qualidade do arredondamento comum cai **pela metade**. Qwen2.5-0.5B: de +22% para **+11%**; SmolLM2-135M: de +18% para **+7,5%**. Em 3 bits, de +310% para +62% | GPU T4 (Qwen) e CPU (SmolLM2) |
 | Modelo de linguagem nativo em rede tensorial | CPU: vence a fatoração clássica, mas perde para um modelo denso mais estreito. GPU (T4): denso 1,947 contra TT 2,329 bits/caractere com 6,1× menos parâmetros; a versão completa roda agora |
 | Encolher um modelo pronto com rede tensorial (Qwen 0,5B) | GPU (T4): 1,27× menor, mas a perplexidade vai de 18,7 para 28,7 e a conversa se perde. **Não compete** com a quantização; ficou como pesquisa |
 | Adaptador de ajuste fino em rede tensorial contra LoRA | CPU: **o LoRA ganhou** com os mesmos parâmetros (2,585 contra 2,647) e até com o menor tamanho possível (2,580 contra 2,669 do TT) |
@@ -886,12 +886,37 @@ no WikiText-2, menor é melhor:
 
 Em 4 bits, a perda de qualidade cai para menos da metade. Em 3 bits, o
 arredondamento comum quebra o modelo (respostas embaralhadas) e o guiado pelos
-dados continua coerente. Limites, ditos com clareza: o ganho é de **tamanho
-guardado** (disco, download, transmissão). Para gastar menos memória e ganhar
-velocidade na execução falta um núcleo de cálculo com inteiros, que esta versão
-não tem. Os métodos de ponta (GPTQ, AWQ completo) também corrigem o erro;
-a comparação direta com eles ainda não foi feita. Resultados completos em
-`resultados/ia/quantizacao_smollm135m_cpu.json`.
+dados continua coerente.
+
+**Repetido na GPU** (Google Colab, T4, 24/11/2026) com um modelo 4× maior, o
+Qwen2.5-0.5B-Instruct, agora em **todas** as camadas lineares (atenção e MLP);
+perplexidade em 32.768 tokens do WikiText-2:
+
+| Método | Bits por peso | Tamanho | Perplexidade | Perda |
+|---|---|---|---|---|
+| Original (16 bits) | 16 | 942 MB | 18,72 | — |
+| 8 bits, arredondamento | 8,19 | 609 MB | 18,71 | 0% |
+| 4 bits, arredondamento (o padrão) | 4,16 | 437 MB | 22,90 | +22% |
+| 4 bits guiado pelos dados | 4,17 | 438 MB | 21,24 | +13% |
+| **4 bits guiado pelos dados + correção** | 4,68 | 459 MB | **20,73** | **+11%** |
+| 3 bits, arredondamento | 3,15 | 394 MB | 76,76 | +310% |
+| 3 bits guiado pelos dados | 3,16 | 395 MB | 38,80 | +107% |
+| **3 bits guiado pelos dados + correção** | 3,67 | 416 MB | **30,30** | **+62%** |
+
+O resultado se repete: a perda dos 4 bits cai pela metade. O modelo inteiro
+encolhe só ~2× porque o vocabulário do Qwen (152 mil palavras, 136 milhões de
+parâmetros) fica em 16 bits em todos os métodos. Nas respostas, os 4 bits com
+correção continuam coerentes; os 3 bits, mesmo com correção, já erram fatos
+(e o próprio Qwen 0,5B original responde que a capital da França é Lisboa:
+modelo deste tamanho não serve para fatos).
+
+Limites, ditos com clareza: o ganho é de **tamanho guardado** (disco,
+download, transmissão). Para gastar menos memória e ganhar velocidade na
+execução falta um núcleo de cálculo com inteiros, que esta versão não tem; na
+GPU, a correção ainda custa velocidade (0,73× do original, porque é uma
+multiplicação a mais sem núcleo próprio). Os métodos de ponta (GPTQ, AWQ
+completo) também corrigem o erro; a comparação direta com eles ainda não foi
+feita. Resultados completos em `resultados/ia/`.
 
 ### Ajuste fino: adaptador em rede tensorial contra LoRA
 

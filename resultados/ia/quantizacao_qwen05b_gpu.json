@@ -1,0 +1,239 @@
+{
+ "modelo_base": "Qwen/Qwen2.5-0.5B-Instruct",
+ "posto": 32,
+ "nucleos": 3,
+ "passos_cura": 300,
+ "tokens_avaliados": 32768,
+ "dados_cura": "wikitext",
+ "dispositivo": "cuda",
+ "fator": null,
+ "grupo": 128,
+ "bits_correcao": 0.5,
+ "camadas": [
+  "q_proj",
+  "k_proj",
+  "v_proj",
+  "o_proj",
+  "gate_proj",
+  "up_proj",
+  "down_proj"
+ ],
+ "threads": 1,
+ "linhas": [
+  {
+   "modelo": "original",
+   "parametros": 494032768,
+   "bits": 7904524288,
+   "mb": 942.292724609375,
+   "perplexidade": 18.719461364557024,
+   "tokens_por_s": 36.663406793313506,
+   "respostas": [
+    {
+     "pergunta": "Qual é a capital da França?",
+     "resposta": "A capital da França é Lisboa.\n\nLisboa é uma cidade icônica e importante na história da França, conhecida por sua arquitetura medieval, sua cultura popolare e seu papel crucial na história política e cultural"
+    },
+    {
+     "pergunta": "Explique em uma frase o que é um computador quântico.",
+     "resposta": "Um computador quântico é um sistema de computação que utiliza os princípios da física quântica para processar e armazenar informações. Esses sistemas são conhecidos por sua capacidade de operar com"
+    },
+    {
+     "pergunta": "Dê três dicas para dormir melhor.",
+     "resposta": "Claro, aqui estão três dicas que podem ajudar você a dormir melhor:\n\n1. Comece sua jornada de sono com um bom almoço: O almoço pode ser uma das partes mais importantes do seu dia"
+    }
+   ],
+   "compressao": 1.0,
+   "aceleracao": 1.0
+  },
+  {
+   "modelo": "8 bits (arredondamento)",
+   "parametros": 494032768,
+   "bits": 5109004288,
+   "mb": 609.040771484375,
+   "perplexidade": 18.71465814421211,
+   "tokens_por_s": 39.84633463599866,
+   "respostas": [
+    {
+     "pergunta": "Qual é a capital da França?",
+     "resposta": "A capital da França é Lisboa.\n\nLisboa é uma cidade icônica e importante na história da França, conhecida por sua arquitetura medieval, sua cultura e sua importância política. Aqui estão alguns pontos-ch"
+    },
+    {
+     "pergunta": "Explique em uma frase o que é um computador quântico.",
+     "resposta": "Um computador quântico é um sistema de computação que utiliza os princípios da física quântica para processar e armazenar informações. Esses sistemas são conhecidos por sua capacidade de operar com"
+    },
+    {
+     "pergunta": "Dê três dicas para dormir melhor.",
+     "resposta": "Claro, aqui estão três dicas que podem ajudar você a dormir melhor:\n\n1. Planeje sua rotina de sono: Comece a planejar o seu dia e a hora de dormir. Isso pode incluir"
+    }
+   ],
+   "bits_por_peso": 8.188736263736264,
+   "metodo": "int8",
+   "s_comprimir": 0.4095564409999497,
+   "compressao": 1.5471751132732656,
+   "aceleracao": 1.0868148413110819
+  },
+  {
+   "modelo": "4 bits (arredondamento)",
+   "parametros": 494032768,
+   "bits": 3666515968,
+   "mb": 437.082763671875,
+   "perplexidade": 22.903828078107,
+   "tokens_por_s": 39.66315484025378,
+   "respostas": [
+    {
+     "pergunta": "Qual é a capital da França?",
+     "resposta": "A capital da França é Paris.\n\nAlguns fatals importantes sobre Paris:\n\n1. É o centro político e econômico do país.\n2. Foi fundada como uma colônia francesa em 605"
+    },
+    {
+     "pergunta": "Explique em uma frase o que é um computador quântico.",
+     "resposta": "Um computador quântico é um dispositivo ou software que utiliza processamento de bits como núcleo principal, mas também contém informações sobre estados físicos e quânticos associados à execução do código. Esses"
+    },
+    {
+     "pergunta": "Dê três dicas para dormir melhor.",
+     "resposta": "Claro, aqui estão três dicas para dormir bem:\n\n1. **Preparação do Corpo**: Uma boa noite de sono começa com uma preparação física adequada antes da noite. Isso pode incluir exerc"
+    }
+   ],
+   "bits_por_peso": 4.1574862637362635,
+   "metodo": "int4",
+   "s_comprimir": 0.3410135080002874,
+   "compressao": 2.155867956661794,
+   "aceleracao": 1.0818185845044643
+  },
+  {
+   "modelo": "4 bits guiado por dados",
+   "parametros": 494032768,
+   "bits": 3670370304,
+   "mb": 437.542236328125,
+   "perplexidade": 21.244119125409835,
+   "tokens_por_s": 35.1372172605873,
+   "respostas": [
+    {
+     "pergunta": "Qual é a capital da França?",
+     "resposta": "A capital da França é Paris.\n\nParis é o maior e mais populoso cidade do mundo, com uma população de aproximadamente 10 milhões de habitantes. É a capital do país francês e também serve como sede para muit"
+    },
+    {
+     "pergunta": "Explique em uma frase o que é um computador quântico.",
+     "resposta": "Um computador quântico é um dispositivo especial de armazenamento e processamento criado pela equipe da empresa Quantum Computer Science Corporation (QCCS). Esses dispositivos são projetados para operar com quantidades enormes"
+    },
+    {
+     "pergunta": "Dê três dicas para dormir melhor.",
+     "resposta": "Claro! Aqui estão três dicas para você dormir bem:\n\n1. **Calma e Calma**: Dorma com calma e calma. Isso significa que você não precisa se preocupar muito com o que aconte"
+    }
+   ],
+   "bits_por_peso": 4.168257783882784,
+   "metodo": "int4+dados",
+   "s_comprimir": 2.9561688210001194,
+   "compressao": 2.153604032646402,
+   "aceleracao": 0.9583729482279169
+  },
+  {
+   "modelo": "4 bits guiado por dados + correção (~0.5 bit)",
+   "parametros": 505386880,
+   "bits": 3852036096,
+   "mb": 459.198486328125,
+   "perplexidade": 20.730260482058394,
+   "tokens_por_s": 26.91433597488815,
+   "respostas": [
+    {
+     "pergunta": "Qual é a capital da França?",
+     "resposta": "A capital da França é Paris.\n\nAlguns fatos interessantes sobre Paris:\n\n1. É o maior cidade do mundo por área.\n2. É a capital de 30 países (45% dos membros da ONU"
+    },
+    {
+     "pergunta": "Explique em uma frase o que é um computador quântico.",
+     "resposta": "Um computador quântico é um dispositivo de processamento especializado em operações cujo resultado pode ser obtido apenas com base na sua condição atual e não necessariamente no estado inicial do computador. Esses disposit"
+    },
+    {
+     "pergunta": "Dê três dicas para dormir melhor.",
+     "resposta": "Claro! Aqui estão três dicas para você dormir melhor:\n\n1. **Calma e Calmo**: A calma é um dos elementos mais importantes na melhora do sono. Seja relaxada ou enxuta,"
+    }
+   ],
+   "bits_por_peso": 4.675950091575092,
+   "metodo": "int4+dados+correcao",
+   "s_comprimir": 203.13743207100015,
+   "compressao": 2.0520379588883273,
+   "aceleracao": 0.7340926097406926
+  },
+  {
+   "modelo": "3 bits (arredondamento)",
+   "parametros": 494032768,
+   "bits": 3305893888,
+   "mb": 394.09326171875,
+   "perplexidade": 76.75522837647404,
+   "tokens_por_s": 30.454301393884833,
+   "respostas": [
+    {
+     "pergunta": "Qual é a capital da França?",
+     "resposta": "A Capital da Franca, também conhecida como \"Casa\" e \"Casa do 100\", é um estilo de mobiliço feito para transportar os mais de as万户.\n\nEssa capacidade foi ad"
+    },
+    {
+     "pergunta": "Explique em uma frase o que é um computador quântico.",
+     "resposta": "As resp0dências ao explSalvar-se-aincendo-os-a-ci-não-somais-aindo-os-na-cadência não há, não posso, não-ha, não-poi, não-ei."
+    },
+    {
+     "pergunta": "Dê três dicas para dormir melhor.",
+     "resposta": "1/30 - Comecéri de 30 dias de 30 minima\n-0\n\nDesculamos e revisões gratuitamente disponíveis, garantindo assim, que os 30 minutos de 300"
+    }
+   ],
+   "bits_por_peso": 3.149673763736264,
+   "metodo": "int3",
+   "s_comprimir": 0.3592248400000244,
+   "compressao": 2.3910399292283637,
+   "aceleracao": 0.8306457052823291
+  },
+  {
+   "modelo": "3 bits guiado por dados",
+   "parametros": 494032768,
+   "bits": 3309768704,
+   "mb": 394.55517578125,
+   "perplexidade": 38.80132371912619,
+   "tokens_por_s": 40.088906973003034,
+   "respostas": [
+    {
+     "pergunta": "Qual é a capital da França?",
+     "resposta": "Aqui está o respostas:\n\nA capital do Portugal é Lisboa.\n\nPortugalsina, na línea com Portugal, é uma cidade próxima ao sul de Portugal, no norte da África. Portaleiros, em"
+    },
+    {
+     "pergunta": "Explique em uma frase o que é um computador quântico.",
+     "resposta": "Um computador quântico é uma ferramenta digitalizada de computação científica utilizada para simular e manipular números em sequências de bits. Os computadores quânticos são geralmente mais eficientes"
+    },
+    {
+     "pergunta": "Dê três dicas para dormir melhor.",
+     "resposta": "Aqui estão quatro Dicas para dormir bem:\n\n1. **Saudaço**: Faça uma pausa regularmente, sem estes termos. Faça um saudaço de 20 minutos ao menos por"
+    }
+   ],
+   "bits_por_peso": 3.160502518315018,
+   "metodo": "int3+dados",
+   "s_comprimir": 2.8917516449996583,
+   "compressao": 2.388240688374096,
+   "aceleracao": 1.0934310387193547
+  },
+  {
+   "modelo": "3 bits guiado por dados + correção (~0.5 bit)",
+   "parametros": 505386880,
+   "bits": 3491434496,
+   "mb": 416.21142578125,
+   "perplexidade": 30.296951432950937,
+   "tokens_por_s": 25.96608053604076,
+   "respostas": [
+    {
+     "pergunta": "Qual é a capital da França?",
+     "resposta": "Africana (ou Afrika) é uma comunidade africana que se estende na África do Sul. A capital de Afriquea é Cape Verde, um país comunitário formado pela Ale, Enderreg"
+    },
+    {
+     "pergunta": "Explique em uma frase o que é um computador quântico.",
+     "resposta": "O que você chama de um computador quântico? Não, eu não faço isso! Você está perguntando sobre os quânticos, um termo específico usado pela comunidade AIBA (American Institute"
+    },
+    {
+     "pergunta": "Dê três dicas para dormir melhor.",
+     "resposta": "Aqui estão três dicas para ajudar a você em um bom sono:\n1. Abações: Comece com uma boa abríção regular e mantenha-se no mesmo nível de apetecimento durante o dia."
+    }
+   ],
+   "bits_por_peso": 3.668194826007326,
+   "metodo": "int3+dados+correcao",
+   "s_comprimir": 207.60168020599986,
+   "compressao": 2.263976109835629,
+   "aceleracao": 0.7082287983335015
+  }
+ ],
+ "data": "2026-11-24",
+ "onde": "Google Colab, GPU Tesla T4 (gratuito)"
+}
