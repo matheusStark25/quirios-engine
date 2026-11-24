@@ -32,7 +32,8 @@ try:
 except ImportError as e:                      # pragma: no cover
     raise ImportError('O LLM tensorial exige PyTorch: pip install -e ".[ia]" transformers datasets') from e
 
-from .ia_tensorial import CamadaPostoBaixo, CamadaTT, contar_params, posto_equivalente
+from .ia_tensorial import CamadaPostoBaixo, CamadaTT, contar_params, posto_equivalente, svd_branqueado
+from .quantizacao import CamadaQuantizada, bits_do_modelo, ler_metodo, posto_para_bits
 
 MODELO_PADRAO = "HuggingFaceTB/SmolLM2-135M-Instruct"
 ALVOS = ("q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj")
@@ -144,31 +145,44 @@ def postobaixo_com_dados(lin, posto, cov, eps=1e-4):
     """SVD branqueado pelas ativações (SVD-LLM, Wang et al. 2024): minimiza o erro
     na SAÍDA da camada, ||W X - U V X||, e não nos pesos. W C = U S V^T com
     C C^T = E[x x^T]; a camada fica U S^(1/2) e S^(1/2) V^T C^-1."""
-    W = lin.weight.detach().cpu().double()                      # sempre na CPU, em float64: o mesmo caminho
-    cov = cov.detach().cpu().double()                           # com ou sem GPU (a camada nova nasce na CPU)
-    S = cov + eps * torch.eye(cov.shape[0], dtype=torch.float64) * cov.diagonal().mean()
-    C = torch.linalg.cholesky(S)
-    U, s, Vt = torch.linalg.svd(W @ C, full_matrices=False)
-    raiz = s[:posto].sqrt()
+    A, B = svd_branqueado(lin.weight, cov, posto, eps)          # na CPU em float64 (a camada nova nasce na CPU)
     c = CamadaPostoBaixo(lin.in_features, lin.out_features, posto, vies=lin.bias is not None)
-    c.U.data.copy_((U[:, :posto] * raiz).float())
-    c.V.data.copy_(torch.linalg.solve_triangular(C, raiz[:, None] * Vt[:posto], upper=False, left=False).float())
+    c.U.data.copy_(A)
+    c.V.data.copy_(B)
     if lin.bias is not None:
         c.vies.data.copy_(lin.bias.detach())
     return c
 
 
-def comprimir_llm(modelo, metodo="tt", posto=32, d=3, alvos=ALVOS, cov=None, fator=None):
+def precisa_de_dados(metodo):
+    q = ler_metodo(metodo)
+    return metodo == "svd_dados" or bool(q and (q[1] or q[2]))
+
+
+def comprimir_llm(modelo, metodo="tt", posto=32, d=3, alvos=ALVOS, cov=None, fator=None, grupo=128, bits_correcao=0.5):
     """Troca, no lugar, as camadas lineares escolhidas de todos os blocos.
     metodo "tt": CamadaTT (TT-SVD dos pesos), ligação `posto`;
     "svd": posto baixo com os mesmos parâmetros da TT;
     "svd_dados": posto baixo branqueado pelas ativações (precisa de `cov`), com
-    `fator` vezes menos parâmetros por camada (ou os mesmos da TT, se fator=None)."""
-    if metodo not in ("tt", "svd", "svd_dados"):
-        raise ValueError("metodo deve ser 'tt', 'svd' ou 'svd_dados'")
+    `fator` vezes menos parâmetros por camada (ou os mesmos da TT, se fator=None);
+    "int8", "int4", "int3"...: pesos com poucos bits (quantizacao.py), em grupos de `grupo`;
+    "+dados" escolhe a escala dos canais pelas ativações e "+correcao" soma uma correção
+    de posto baixo que custa cerca de `bits_correcao` bits por peso (os dois precisam de `cov`)."""
+    q = ler_metodo(metodo)
+    if metodo not in ("tt", "svd", "svd_dados") and q is None:
+        raise ValueError("metodo deve ser 'tt', 'svd', 'svd_dados' ou de quantização ('int4', 'int4+dados', ...)")
+    if precisa_de_dados(metodo) and cov is None:
+        raise ValueError(f"o método {metodo!r} precisa das covariâncias das entradas (cov)")
     trocadas = 0
     for nome, sub, attr, lin in list(_lineares(modelo, alvos)):
         a, b = lin.in_features, lin.out_features
+        if q:
+            bits, dados, correcao = q
+            nova = CamadaQuantizada.de_linear(lin, bits, grupo, cov=cov[nome] if cov else None, dados=dados,
+                                              posto_correcao=posto_para_bits(a, b, bits_correcao) if correcao else 0)
+            setattr(sub, attr, nova)
+            trocadas += 1
+            continue
         r = (round(a * b / fator / (a + b)) if fator else posto_equivalente(a, b, posto, d))
         r = max(1, min(r, a, b))
         if metodo == "tt":
@@ -272,9 +286,16 @@ def medir(nome, modelo, tok, ids_teste, perguntas=PERGUNTAS, janela=512, max_tok
         r, v = responder(modelo, tok, q)
         respostas.append({"pergunta": q, "resposta": r})
         vel.append(v)
-    return {"modelo": nome, "parametros": contar_params(modelo), "mb_bf16": 2 * contar_params(modelo) / 2 ** 20,
-            "perplexidade": perplexidade(modelo, ids_teste, janela, max_tokens),
-            "tokens_por_s": float(np.median(vel)), "respostas": respostas}
+    bits = bits_do_modelo(modelo)
+    quant = [m for m in modelo.modules() if isinstance(m, CamadaQuantizada)]
+    # os pesos quantizados são códigos inteiros (buffers, não Parameters): contam como pesos do modelo
+    pesos = contar_params(modelo) + sum(m.q.numel() for m in quant)
+    linha = {"modelo": nome, "parametros": pesos, "bits": bits, "mb": bits / 8 / 2 ** 20,
+             "perplexidade": perplexidade(modelo, ids_teste, janela, max_tokens),
+             "tokens_por_s": float(np.median(vel)), "respostas": respostas}
+    if quant:                                                     # bits por peso nas camadas quantizadas
+        linha["bits_por_peso"] = sum(m.tamanho_bits() for m in quant) / sum(m.q.numel() for m in quant)
+    return linha
 
 
 def posto_tt_equivalente(entrada, saida, fator, d=3):
@@ -285,56 +306,94 @@ def posto_tt_equivalente(entrada, saida, fator, d=3):
     return min(range(2, 1025), key=lambda r: abs(params_camada_tt(entrada, saida, r, d) - alvo))
 
 
+def rotulo_metodo(metodo, posto=32, fator=None, bits_correcao=0.5):
+    q = ler_metodo(metodo)
+    if q:
+        bits, dados, correcao = q
+        return (f"{bits} bits" + (" guiado por dados" if dados else " (arredondamento)")
+                + (f" + correção (~{bits_correcao:g} bit)" if correcao else ""))
+    return {"tt": f"TT ligação {posto}", "svd": "posto baixo (mesmos parâmetros)",
+            "svd_dados": f"posto baixo guiado por dados ({fator or 1:g}x por camada)"}[metodo]
+
+
 def demo(nome=MODELO_PADRAO, metodos=("tt",), posto=32, d=3, passos=300, lote=2, seq=192, lr=3e-4, max_tokens=16384,
          seed=0, ao_progresso=None, saida=None, alvos=ALVOS_MLP, fator=None, dados_cura="wikitext", dispositivo="cpu",
-         perguntas=PERGUNTAS):
-    """dados_cura: "wikitext" (texto enciclopédico), "conversas" (chat) ou "misto"."""
+         perguntas=PERGUNTAS, grupo=128, bits_correcao=0.5, ao_linha=None):
+    """dados_cura: "wikitext" (texto enciclopédico), "conversas" (chat) ou "misto".
+    Os métodos de quantização ("int4", "int4+dados", "int3+dados+correcao"...) não passam
+    por cura: são pós-treino, como se usa na prática. Os outros são curados por `passos`.
+    ao_linha(resultado_parcial) é chamado depois de cada método (para gravar aos poucos)."""
     torch.manual_seed(seed)
+    for m in metodos:                                            # confere os nomes antes de gastar GPU
+        if m not in ("tt", "svd", "svd_dados"):
+            if ler_metodo(m) is None:
+                raise ValueError(f"método desconhecido: {m!r}")
+    curados = [m for m in metodos if ler_metodo(m) is None]
     tok, modelo = carregar(nome, dispositivo)
     ids_teste = tokens(tok, texto_wikitext("test"))
     partes = {"wikitext": [texto_wikitext("train")], "conversas": [texto_conversas(tok)],
               "misto": [texto_wikitext("train"), texto_conversas(tok)]}[dados_cura]
     ids_treino = torch.cat([tokens(tok, t) for t in partes])
     linhas = [medir("original", modelo, tok, ids_teste, perguntas, max_tokens=max_tokens)]
-    janelas, top_p, top_i = alvos_do_professor(modelo, ids_treino, passos, lote, seq, seed=seed)
-    cov = covariancias_de_entrada(modelo, ids_treino.to(dispositivo), alvos, seed=seed) if "svd_dados" in metodos else None
+    janelas, top_p, top_i = (alvos_do_professor(modelo, ids_treino, passos, lote, seq, seed=seed) if curados
+                             else ([], [], []))
+    cov = (covariancias_de_entrada(modelo, ids_treino.to(dispositivo), alvos, seed=seed)
+           if any(precisa_de_dados(m) for m in metodos) else None)
     del modelo
+
+    def resultado():
+        base = linhas[0]
+        for l in linhas:
+            l["compressao"] = base["bits"] / l["bits"]
+            l["aceleracao"] = l["tokens_por_s"] / base["tokens_por_s"]
+        return {"modelo_base": nome, "posto": posto, "nucleos": d, "passos_cura": passos, "tokens_avaliados": max_tokens,
+                "dados_cura": dados_cura, "dispositivo": str(dispositivo), "fator": fator, "grupo": grupo,
+                "bits_correcao": bits_correcao, "camadas": list(alvos), "threads": torch.get_num_threads(),
+                "linhas": linhas}
+
     for metodo in metodos:
         _, modelo = carregar(nome, dispositivo)
-        comprimir_llm(modelo, metodo, posto, d, alvos, cov=cov, fator=fator)
+        t0 = time.perf_counter()
+        comprimir_llm(modelo, metodo, posto, d, alvos, cov=cov, fator=fator, grupo=grupo, bits_correcao=bits_correcao)
+        s_comprimir = time.perf_counter() - t0
         modelo.to(dispositivo)                                    # as camadas novas nascem na CPU
-        rotulo = {"tt": f"TT ligação {posto}", "svd": "posto baixo (mesmos parâmetros)",
-                  "svd_dados": f"posto baixo guiado por dados ({fator or 1:g}x por camada)"}[metodo]
-        ppl_sem = perplexidade(modelo, ids_teste, max_tokens=max_tokens)
-        info = {}
-        t = curar(modelo, janelas, top_p, top_i, lr=lr, info=info,
-                  ao_progresso=(lambda s, l, dt, m=metodo: ao_progresso(m, s, l, dt)) if ao_progresso else None)
-        linha = medir(rotulo, modelo, tok, ids_teste, perguntas, max_tokens=max_tokens)
-        linha.update(perplexidade_sem_cura=ppl_sem, s_cura=t, passos_cura=passos, reducoes_lr=info["reducoes_lr"])
+        rotulo = rotulo_metodo(metodo, posto, fator, bits_correcao)
+        if metodo in curados:
+            ppl_sem = perplexidade(modelo, ids_teste, max_tokens=max_tokens)
+            info = {}
+            t = curar(modelo, janelas, top_p, top_i, lr=lr, info=info,
+                      ao_progresso=(lambda s, l, dt, m=metodo: ao_progresso(m, s, l, dt)) if ao_progresso else None)
+            linha = medir(rotulo, modelo, tok, ids_teste, perguntas, max_tokens=max_tokens)
+            linha.update(perplexidade_sem_cura=ppl_sem, s_cura=t, passos_cura=passos, reducoes_lr=info["reducoes_lr"])
+        else:
+            linha = medir(rotulo, modelo, tok, ids_teste, perguntas, max_tokens=max_tokens)
+        linha.update(metodo=metodo, s_comprimir=s_comprimir)
         linhas.append(linha)
         if saida:
-            torch.save({k: v.detach().to(torch.bfloat16) for k, v in modelo.state_dict().items()},
-                       f"{saida}_{metodo}.pt")
+            torch.save({k: (v.detach().to(torch.bfloat16) if v.is_floating_point() else v.detach())
+                        for k, v in modelo.state_dict().items()}, f"{saida}_{metodo.replace('+', '_')}.pt")
         del modelo
-    base = linhas[0]
-    for l in linhas:
-        l["compressao"] = base["parametros"] / l["parametros"]
-        l["aceleracao"] = l["tokens_por_s"] / base["tokens_por_s"]
-    return {"modelo_base": nome, "posto": posto, "nucleos": d, "passos_cura": passos, "tokens_avaliados": max_tokens,
-            "dados_cura": dados_cura, "dispositivo": str(dispositivo), "fator": fator,
-            "camadas": list(alvos), "threads": torch.get_num_threads(), "linhas": linhas}
+        if ao_linha:
+            ao_linha(resultado())
+    return resultado()
+
+
+def _onde(res):
+    d = str(res.get("dispositivo", "cpu"))
+    return "GPU" if d.startswith("cuda") else f"CPU ({res['threads']} threads)"
 
 
 def texto_demo(res):
-    out = [f"{res['modelo_base']} na CPU ({res['threads']} threads); perplexidade no WikiText-2 (teste, "
-           f"{res['tokens_avaliados']} tokens; menor é melhor)"]
+    out = [f"{res['modelo_base']}; geração medida na {_onde(res)}; perplexidade no WikiText-2 (teste, "
+           f"{res['tokens_avaliados']} tokens; menor é melhor); tamanho com pesos comuns em 16 bits"]
     for l in res["linhas"]:
         extra = (f" (sem cura: {l['perplexidade_sem_cura']:.1f}; cura de {l['passos_cura']} passos em "
                  f"{l['s_cura'] / 60:.1f} min"
                  + (f"; divergiu e desacelerou {l['reducoes_lr']}x" if l.get("reducoes_lr") else "")
                  + ")") if "perplexidade_sem_cura" in l else ""
-        out.append(f"  {l['modelo']:32s} {l['parametros'] / 1e6:6.1f} M parâm. ({l['compressao']:.2f}x menor, "
-                   f"{l['mb_bf16']:.0f} MB)  perplexidade {l['perplexidade']:6.2f}{extra}  "
+        bits = f", {l['bits_por_peso']:.2f} bits/peso" if "bits_por_peso" in l else ""
+        out.append(f"  {l['modelo']:36s} {l['mb']:6.0f} MB ({l['compressao']:.2f}x menor{bits})  "
+                   f"perplexidade {l['perplexidade']:6.2f}{extra}  "
                    f"{l['tokens_por_s']:.1f} tokens/s ({l['aceleracao']:.2f}x)")
     for i, q in enumerate(res["linhas"][0]["respostas"]):
         out.append(f"\n  P: {q['pergunta']}")
@@ -350,6 +409,10 @@ def main(argv=None):
     p = sub.add_parser("demo")
     p.add_argument("--modelo", default=MODELO_PADRAO)
     p.add_argument("--metodo", choices=["tt", "svd", "svd_dados", "todos"], default="svd_dados")
+    p.add_argument("--metodos", nargs="+", default=None,
+                   help="lista livre, ex.: int8 int4 int4+dados int3+dados+correcao svd_dados tt (substitui --metodo)")
+    p.add_argument("--grupo", type=int, default=128, help="tamanho do grupo da quantização")
+    p.add_argument("--bits-correcao", type=float, default=0.5, help="bits por peso gastos na correção (+correcao)")
     p.add_argument("--fator", type=float, default=None, help="vezes menos parâmetros por camada (svd_dados)")
     p.add_argument("--posto", type=int, default=32)
     p.add_argument("--nucleos", type=int, default=3)
@@ -362,11 +425,11 @@ def main(argv=None):
     p.add_argument("--dados-cura", choices=["wikitext", "conversas", "misto"], default="wikitext")
     p.add_argument("--dispositivo", default="cpu", help="cpu ou cuda (GPU)")
     a = ap.parse_args(argv)
-    metodos = ("svd_dados", "tt") if a.metodo == "todos" else (a.metodo,)
+    metodos = tuple(a.metodos) if a.metodos else (("svd_dados", "tt") if a.metodo == "todos" else (a.metodo,))
     prog = lambda m, s, l, dt: print(f"  [{m}] cura passo {s}: perda {l:.3f} ({dt / 60:.1f} min)", flush=True)
     res = demo(a.modelo, metodos, a.posto, a.nucleos, a.passos, lr=a.lr, max_tokens=a.tokens_teste,
                ao_progresso=prog, saida=a.saida, alvos=ALVOS_MLP if a.alvos == "mlp" else ALVOS, fator=a.fator,
-               dados_cura=a.dados_cura, dispositivo=a.dispositivo)
+               dados_cura=a.dados_cura, dispositivo=a.dispositivo, grupo=a.grupo, bits_correcao=a.bits_correcao)
     print(texto_demo(res))
     if a.json:
         with open(a.json, "w", encoding="utf-8") as f:

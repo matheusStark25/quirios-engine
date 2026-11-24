@@ -190,6 +190,22 @@ class CamadaPostoBaixo(nn.Module):
         return y + self.vies if self.vies is not None else y
 
 
+def svd_branqueado(W, cov, posto, eps=1e-4):
+    """Melhor aproximação de posto `posto` de W para o erro na SAÍDA, ||(W - U V) X||,
+    com E[x x^T] = cov (SVD-LLM, Wang et al. 2024). W C = U S V^T com C C^T = cov;
+    devolve U S^(1/2) (saida x posto) e S^(1/2) V^T C^-1 (posto x entrada), em float32.
+    A conta é sempre na CPU, em float64: o mesmo caminho com ou sem GPU."""
+    W = W.detach().cpu().double()
+    cov = cov.detach().cpu().double()
+    S = cov + eps * torch.eye(cov.shape[0], dtype=torch.float64) * cov.diagonal().mean()
+    C = torch.linalg.cholesky(S)
+    U, s, Vt = torch.linalg.svd(W @ C, full_matrices=False)
+    raiz = s[:posto].sqrt()
+    A = (U[:, :posto] * raiz).float()
+    B = torch.linalg.solve_triangular(C, raiz[:, None] * Vt[:posto], upper=False, left=False).float()
+    return A, B
+
+
 def params_camada_tt(entrada, saida, posto, d=4):
     ms, ns = fatorar(saida, d), fatorar(entrada, d)
     r = _postos(ms, ns, posto)

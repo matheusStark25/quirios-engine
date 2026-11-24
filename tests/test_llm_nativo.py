@@ -17,6 +17,16 @@ def test_as_quatro_versoes_e_a_largura_equivalente():
     assert contar_params(ln.MiniGPT(V, L, 2, 4, 32)) <= contar_params(tt) < contar_params(ln.MiniGPT(V, L + 16, 2, 4, 32))
 
 
+def test_tt_larga_cabe_no_mesmo_orcamento():
+    V = 50
+    alvo = contar_params(ln.MiniGPT(V, 64, 2, 4, 32, ln.fabrica("tt", 8, 3)))
+    r = ln.ligacao_equivalente(V, alvo, 128, 2, 4, 32, 3)
+    assert r is not None and r >= 2
+    assert contar_params(ln.MiniGPT(V, 128, 2, 4, 32, ln.fabrica("tt", r, 3))) <= alvo
+    assert contar_params(ln.MiniGPT(V, 128, 2, 4, 32, ln.fabrica("tt", r + 1, 3))) > alvo
+    assert ln.ligacao_equivalente(V, 10, 128, 2, 4, 32, 3) is None              # orçamento pequeno demais
+
+
 def test_treina_aprende_e_escreve():
     torch.manual_seed(0)
     ids = torch.tensor([1, 2, 3, 4] * 400)                                     # padrão fácil de aprender

@@ -142,8 +142,20 @@ def _largura_equivalente(vocab, alvo, camadas, cabecas, contexto):
     return melhor
 
 
+def ligacao_equivalente(vocab, alvo, largura, camadas, cabecas, contexto, d=3, maximo=256):
+    """Maior ligação TT de um MiniGPT de `largura` com até `alvo` parâmetros (None se nem a ligação 2 cabe)."""
+    melhor = None
+    for r in range(2, maximo + 1):
+        if contar_params(MiniGPT(vocab, largura, camadas, cabecas, contexto, fabrica("tt", r, d))) > alvo:
+            break
+        melhor = r
+    return melhor
+
+
 def experimento(passos=600, largura=192, camadas=3, cabecas=4, contexto=128, posto=16, d=3, lote=16, seed=0,
-                dispositivo="cpu", ao_progresso=None):
+                dispositivo="cpu", ao_progresso=None, largura_tt_larga=None):
+    """largura_tt_larga: também treina uma TT MAIS LARGA com os mesmos parâmetros da TT comum
+    (a rede tensorial deixa ter camadas largas por quase nada; aqui se mede se isso compensa)."""
     treino, teste, simbolos = dados_caracteres()
     V = len(simbolos)
     torch.manual_seed(seed)
@@ -153,6 +165,14 @@ def experimento(passos=600, largura=192, camadas=3, cabecas=4, contexto=128, pos
                (f"rede tensorial TT (ligação {posto})", largura, fabrica("tt", posto, d)),
                ("posto baixo (mesmos parâmetros)", largura, fabrica("posto_baixo", posto, d)),
                (f"denso estreito (largura {estreita}, mesmos parâmetros)", estreita, fabrica("denso"))]
+    if largura_tt_larga:
+        if largura_tt_larga % cabecas:
+            raise ValueError("largura_tt_larga deve ser múltipla de cabecas")
+        r = ligacao_equivalente(V, tt_params, largura_tt_larga, camadas, cabecas, contexto, d)
+        if r is None:
+            raise ValueError(f"nem a ligação 2 cabe em {tt_params} parâmetros com largura {largura_tt_larga}")
+        configs.append((f"rede tensorial TT larga (largura {largura_tt_larga}, ligação {r}, mesmos parâmetros)",
+                        largura_tt_larga, fabrica("tt", r, d)))
     linhas = []
     for nome, L, fab in configs:
         torch.manual_seed(seed)
@@ -193,9 +213,13 @@ def main(argv=None):
     ap.add_argument("--posto", type=int, default=16)
     ap.add_argument("--lote", type=int, default=16)
     ap.add_argument("--dispositivo", default="cpu", help="cpu ou cuda (GPU)")
+    ap.add_argument("--tt-larga", type=int, default=None, help="também treina uma TT com esta largura e os mesmos parâmetros")
     ap.add_argument("--json", default=None)
     a = ap.parse_args(argv)
-    res = experimento(a.passos, a.largura, a.camadas, posto=a.posto, lote=a.lote, dispositivo=a.dispositivo)
+    mostra = lambda l: print(f"  {l['modelo']}: {l['bits_por_caractere']:.3f} bits/caractere "
+                             f"({l['s_treino'] / 60:.1f} min)", flush=True)
+    res = experimento(a.passos, a.largura, a.camadas, posto=a.posto, lote=a.lote, dispositivo=a.dispositivo,
+                      ao_progresso=mostra, largura_tt_larga=a.tt_larga)
     print(texto_experimento(res))
     if a.json:
         import json

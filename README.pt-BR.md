@@ -29,8 +29,11 @@ Cada número deste projeto saiu de uma execução, e cada um diz onde foi medido
 | Prova completa na QPU real: 3 experimentos, 8 jobs, **22 s de QPU**. Dados preparados no chip: empate (80% contra 80%). Evolução sorteada no chip: 92,5% contra 88,7% do circuito padrão (o campeão não usa portas de 2 qubits) | QPU da IBM, comprovantes em `resultados/qpu_real/` |
 | Camada de IA em rede tensorial: MNIST 35× menor, 97,46% contra 97,34% do original | CPU (PyTorch) |
 | Dados clássicos na QPU: foto 128×128 com 68× menos portas de 2 qubits | Circuitos compilados, fidelidade calculada |
-| Modelo de linguagem nativo em rede tensorial | CPU: vence a fatoração clássica, mas perde para um modelo denso mais estreito. GPU: notebook pronto (Kaggle ou Colab), ainda não rodou |
-| Proteção (sem chave não sobe, trilha assinada, cofre pós-quântico) | 330 testes, incluindo ataques a cada camada |
+| Quantização guiada pelos dados (4 bits por peso): perda de qualidade cai de +18% para **+7,5%** contra o arredondamento comum; em 3 bits, de +149% para +46% | CPU, SmolLM2-135M |
+| Modelo de linguagem nativo em rede tensorial | CPU: vence a fatoração clássica, mas perde para um modelo denso mais estreito. GPU (T4): denso 1,947 contra TT 2,329 bits/caractere com 6,1× menos parâmetros; a versão completa roda agora |
+| Encolher um modelo pronto com rede tensorial (Qwen 0,5B) | GPU (T4): 1,27× menor, mas a perplexidade vai de 18,7 para 28,7 e a conversa se perde. **Não compete** com a quantização; ficou como pesquisa |
+| Adaptador de ajuste fino em rede tensorial contra LoRA | CPU: com os mesmos parâmetros o **LoRA ganhou** (2,585 contra 2,647); ver a tabela |
+| Proteção (sem chave não sobe, trilha assinada, cofre pós-quântico) | 344 testes, incluindo ataques a cada camada |
 
 **Visão de longo prazo, não resultado:** levar parte do treino de IA dos
 clusters de GPU para processadores quânticos, quando o hardware permitir.
@@ -75,6 +78,8 @@ quirios_engine/
 │   ├── ia_tensorial.py       camadas TT em PyTorch: modelos de IA comprimidos e acelerados (CLI)
 │   ├── llm_nativo.py         modelo de linguagem que nasce em rede tensorial, comparação justa (CLI)
 │   ├── llm_tensorial.py      modelo de linguagem já treinado, comprimido e curado por destilação (CLI)
+│   ├── quantizacao.py        quantização de pesos guiada pelos dados, com correção de posto baixo
+│   ├── adaptadores.py        ajuste fino: adaptador em rede tensorial contra LoRA, comparação justa (CLI)
 │   ├── forja.py              forja quântica: um circuito quântico desenha a rede de IA (CLI)
 │   ├── protecao.py           proteção em camadas: chaves com escopo, contenção, auditoria, cofre ML-KEM, guarda de agentes (CLI)
 │   ├── conta_ibm.py          liga a conta da IBM Quantum sem expor a chave (CLI)
@@ -812,9 +817,16 @@ Quando a compressão aperta, a rede tensorial vence a fatoração clássica com
 os mesmos parâmetros (3,94 contra 4,24 bits). Mas nesta escala (camadas de
 192, treino curto) um modelo denso mais estreito ainda é melhor que os dois,
 e a camada TT pequena treina mais devagar na CPU. A vantagem da TT no MNIST
-apareceu com camadas de 1.024 e compressão de 35×; a parte 2 do notebook do
-Kaggle repete este experimento maior (largura 384, 6 blocos, 5.000 passos)
-na GPU para medir onde a curva vira.
+apareceu com camadas de 1.024 e compressão de 35×; a parte 3 do notebook
+repete este experimento maior (largura 384, 6 blocos, 5.000 passos) na GPU
+para medir onde a curva vira. Na primeira rodada (Colab T4, 23/11/2026) saíram
+só duas linhas antes de a sessão cair: denso 1,947 e TT de ligação 24 2,329
+bits por caractere, com 6,1× menos parâmetros. Faltaram justamente as que
+decidem (posto baixo e denso estreito, com os mesmos parâmetros da TT); por
+isso o notebook agora grava cada linha assim que ela sai. Ele também treina
+uma quinta versão: uma TT **bem mais larga** (largura 768) com os mesmos
+parâmetros, para medir se a rede tensorial ganha quando usa a vantagem dela,
+que é ter camadas largas por quase nada (`--tt-larga 768`).
 
 **Encolher um modelo pronto** (`llm_tensorial.py`). Troca as camadas de um
 modelo já treinado (SmolLM2, Qwen2.5...) e o "cura" por destilação. Medido na
@@ -826,17 +838,103 @@ WikiText-2, original 23):
 | Cortar direto (TT ou SVD) | 10⁵ a 10⁸ | — |
 | Posto baixo guiado pelas ativações (branqueamento SVD-LLM) | 163 | 47 (300 passos, 43 min), respostas de chat vazias |
 
-Encolher um modelo pronto sem perder qualidade pede uma cura longa, com
-textos e conversas, que só cabe numa GPU. A rede tensorial também sai do
-TT-SVD desequilibrada (núcleos do meio com entradas minúsculas) e a cura
-divergia; `equilibrar` corrige a escala sem mudar a matriz, e a cura tem uma
-guarda que volta ao último ponto bom se a perda disparar.
+A rede tensorial também sai do TT-SVD desequilibrada (núcleos do meio com
+entradas minúsculas) e a cura divergia; `equilibrar` corrige a escala sem
+mudar a matriz, e a cura tem uma guarda que volta ao último ponto bom se a
+perda disparar.
+
+Na GPU (Google Colab, T4, 23/11/2026), com o Qwen2.5-0.5B e 2.000 passos de
+cura: o modelo ficou 1,27× menor, mas a perplexidade foi de 18,7 para 28,4
+(posto baixo guiado pelos dados) e 28,7 (rede tensorial), e a conversa em
+português se perdeu. A rede tensorial saiu destruída do corte (perplexidade
+179 mil) e a cura a trouxe ao nível do melhor método clássico, mas **isso não
+compete com a quantização** (abaixo), que encolhe mais e perde menos. Encolher
+um modelo pronto em rede tensorial ficou como pesquisa, não como produto.
+
+### Quantização guiada pelos dados: a régua do mercado, melhorada
+
+```bash
+python -m quirios_engine.llm_tensorial demo --metodos int8 int4 int4+dados int4+dados+correcao int3 int3+dados int3+dados+correcao
+```
+
+Hoje o mercado encolhe um modelo de linguagem guardando cada peso com poucos
+bits (8, 4 ou 3 em vez de 16), arredondando por grupos de 128 pesos. O QURIOS
+faz isso e acrescenta dois passos (`quantizacao.py`):
+
+- **`+dados`**: antes de arredondar, cada canal de entrada ganha uma escala
+  escolhida pelas ativações reais do modelo (a ideia do AWQ). O critério é o
+  erro na **saída** da camada, não nos pesos.
+- **`+correcao`**: soma uma correção de posto baixo do erro que sobrou, também
+  medida na saída (o SVD branqueado, a mesma conta que o QURIOS usa para as
+  redes tensoriais). Custa cerca de meio bit a mais por peso.
+
+O tamanho é contado em bits de verdade (os pesos, a escala e o zero de cada
+grupo, a escala de cada canal e a correção). Medido na CPU com o SmolLM2-135M,
+todas as camadas da MLP (os embeddings ficam em 16 bits em todos); perplexidade
+no WikiText-2, menor é melhor:
+
+| Método | Bits por peso | Tamanho | Perplexidade | Perda |
+|---|---|---|---|---|
+| Original (16 bits) | 16 | 257 MB | 22,18 | — |
+| 8 bits, arredondamento | 8,23 | 183 MB | 22,19 | 0% |
+| 4 bits, arredondamento (o padrão) | 4,19 | 144 MB | 26,24 | +18% |
+| 4 bits guiado pelos dados | 4,21 | 145 MB | 25,09 | +13% |
+| **4 bits guiado pelos dados + correção** | 4,70 | 149 MB | **23,85** | **+7,5%** |
+| 3 bits, arredondamento | 3,18 | 135 MB | 55,17 | +149% |
+| 3 bits guiado pelos dados | 3,20 | 135 MB | 38,70 | +74% |
+| **3 bits guiado pelos dados + correção** | 3,69 | 140 MB | **32,40** | **+46%** |
+
+Em 4 bits, a perda de qualidade cai para menos da metade. Em 3 bits, o
+arredondamento comum quebra o modelo (respostas embaralhadas) e o guiado pelos
+dados continua coerente. Limites, ditos com clareza: o ganho é de **tamanho
+guardado** (disco, download, transmissão). Para gastar menos memória e ganhar
+velocidade na execução falta um núcleo de cálculo com inteiros, que esta versão
+não tem. Os métodos de ponta (GPTQ, AWQ completo) também corrigem o erro;
+a comparação direta com eles ainda não foi feita. Resultados completos em
+`resultados/ia/quantizacao_smollm135m_cpu.json`.
+
+### Ajuste fino: adaptador em rede tensorial contra LoRA
+
+```bash
+python -m quirios_engine.adaptadores --passos 300
+```
+
+Ajustar um modelo pronto a uma tarefa nova sem mexer nele: os pesos ficam
+congelados e só uma correção pequena aprende. O padrão do mercado é o LoRA; o
+QURIOS escreve a correção como rede tensorial (`adaptadores.py`, a ideia do
+LoRETTA e do TT-LoRA, de 2024). Comparação justa: mesmos dados na mesma ordem,
+mesmos passos, a melhor taxa de aprendizado de cada método escolhida numa
+validação separada, um LoRA com o **mesmo número de parâmetros** do TT, e a
+nota final num teste que nenhum viu.
+
+Medido na CPU com o SmolLM2-135M, conversas do dia a dia (formato de chat), 80
+passos iguais para todos, adaptadores em todas as camadas lineares dos blocos
+(atenção e MLP);
+perplexidade no teste, menor é melhor:
+
+| Adaptador | Parâmetros treináveis | Perplexidade | Treino na CPU |
+|---|---|---|---|
+| Original, sem ajuste | 0 | 3,939 | — |
+| LoRA posto 8 (o padrão) | 2.442.240 | **2,585** | 7,1 min |
+| LoRA posto 3 (mesmos parâmetros do TT 8) | 915.840 | **2,585** | 3,5 min |
+| TT posto 8 | 856.320 | 2,647 | 25,3 min |
+| TT posto 4 | 236.160 | 2,669 | 7,1 min |
+
+Resultado honesto: **com os mesmos parâmetros, o LoRA ganhou** (2,585 contra
+2,647) e treinou 7× mais rápido. O único lugar onde o TT oferece algo que o
+LoRA não tem é abaixo do menor LoRA possível (posto 1, 305.280 parâmetros
+neste modelo): o TT posto 4, com 236.160, guarda 94% da melhora do LoRA
+comum com 10× menos parâmetros. Isso só vale se ele também ganhar do LoRA
+posto 1, medição que roda agora. Treino curto e modelo pequeno: a parte 2
+do notebook repete com o Qwen2.5-0.5B, 300 passos e três taxas por método.
 
 **Numa GPU grátis** (`exemplos/kaggle_llm_tensorial.ipynb`). O mesmo notebook
 roda no Kaggle, no Google Colab ou num computador com GPU: ele mesmo descobre
 onde está e grava os resultados na pasta certa. Instala o QURIOS direto deste
-GitHub; não precisa subir nada. Parte 1 (Qwen2.5-0.5B comprimido e curado por
-2.000 passos): 40 a 60 min numa T4. Parte 2 (modelo nativo maior): perto de 1 hora.
+GitHub; não precisa subir nada. Três partes, com o Qwen2.5-0.5B nas duas
+primeiras: quantização (cerca de 15 min numa T4), adaptadores (cerca de 1 hora)
+e o modelo nativo maior, em cinco versões (cerca de 1h30). Cada parte grava o
+JSON depois de cada modelo: se a sessão cair, o que terminou fica salvo.
 
 *No Kaggle* (roda nos servidores dele, mesmo com o navegador fechado):
 
@@ -844,15 +942,18 @@ GitHub; não precisa subir nada. Parte 1 (Qwen2.5-0.5B comprimido e curado por
 2. *Settings*: **Accelerator → GPU T4 x2** e **Internet → On** (a conta
    precisa ter o telefone confirmado).
 3. *Save Version → Save & Run All (Commit)*.
-4. Na aba *Output* da versão: `resultado_llm.json` e `resultado_nativo.json`.
+4. Na aba *Output* da versão: `resultado_quantizacao.json`, `resultado_adaptadores.json`
+   e `resultado_nativo.json`.
 
 *No Google Colab* (em novembro de 2026 a fila de GPU do Kaggle travou por horas
 para muitos usuários; o Colab é a saída):
 [![Abrir no Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/matheusStark25/quirios-engine/blob/main/exemplos/kaggle_llm_tensorial.ipynb)
 
 1. *Ambiente de execução → Alterar o tipo de ambiente de execução →* **GPU T4**.
-2. *Ambiente de execução →* **Executar tudo**, com a aba aberta até o fim.
-3. Os dois JSON ficam em `/content` e também saem impressos no fim de cada parte.
+2. *Ambiente de execução →* **Executar tudo**, com a aba aberta e o computador
+   ligado até o fim (se o computador dormir, o Colab derruba a sessão).
+3. Os JSON ficam em `/content` (ícone de pasta, à esquerda) e também saem
+   impressos no fim de cada parte.
 
 ### Forja quântica: um circuito quântico desenha a compressão da IA
 

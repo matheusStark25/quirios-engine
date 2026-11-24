@@ -1,0 +1,164 @@
+{
+ "modelo_base": "HuggingFaceTB/SmolLM2-135M-Instruct",
+ "tarefa": "everyday-conversations (chat)",
+ "passos": 80,
+ "lote": 2,
+ "seq": 128,
+ "lrs": [
+  0.001,
+  0.003
+ ],
+ "nucleos": 4,
+ "camadas": [
+  "q_proj",
+  "k_proj",
+  "v_proj",
+  "o_proj",
+  "gate_proj",
+  "up_proj",
+  "down_proj"
+ ],
+ "tokens_avaliados": 8192,
+ "tokens_treino": 437776,
+ "dispositivo": "cpu",
+ "linhas": [
+  {
+   "modelo": "original, sem ajuste",
+   "tipo": null,
+   "posto": null,
+   "treinaveis": 0,
+   "ppl_validacao": 3.823676844509818,
+   "ppl_teste": 3.9385547536469963
+  },
+  {
+   "modelo": "LoRA posto 8",
+   "tipo": "lora",
+   "posto": 8,
+   "mesmos_parametros_do_tt": false,
+   "treinaveis": 2442240,
+   "lr": 0.001,
+   "ppl_validacao": 2.5062460428810662,
+   "ppl_teste": 2.584985233726834,
+   "s_treino": 427.1775869000003,
+   "memoria_gb": null,
+   "tentativas": [
+    {
+     "lr": 0.001,
+     "ppl_validacao": 2.5062460428810662,
+     "ppl_teste": 2.584985233726834,
+     "s_treino": 427.1775869000003,
+     "perda_final": 1.0712211430072784,
+     "memoria_gb": null,
+     "treinaveis": 2442240
+    },
+    {
+     "lr": 0.003,
+     "ppl_validacao": 2.556713984715501,
+     "ppl_teste": 2.6212337093725084,
+     "s_treino": 240.65246660000003,
+     "perda_final": 1.1951305359601974,
+     "memoria_gb": null,
+     "treinaveis": 2442240
+    }
+   ]
+  },
+  {
+   "modelo": "adaptador TT posto 8",
+   "tipo": "tt",
+   "posto": 8,
+   "mesmos_parametros_do_tt": false,
+   "treinaveis": 856320,
+   "lr": 0.003,
+   "ppl_validacao": 2.5668123906216147,
+   "ppl_teste": 2.646865053448106,
+   "s_treino": 1516.8288532999995,
+   "memoria_gb": null,
+   "tentativas": [
+    {
+     "lr": 0.001,
+     "ppl_validacao": 2.62175995689241,
+     "ppl_teste": 2.7233441611010836,
+     "s_treino": 1205.5840401000005,
+     "perda_final": 1.1666714668273925,
+     "memoria_gb": null,
+     "treinaveis": 856320
+    },
+    {
+     "lr": 0.003,
+     "ppl_validacao": 2.5668123906216147,
+     "ppl_teste": 2.646865053448106,
+     "s_treino": 1516.8288532999995,
+     "perda_final": 1.10483757853508,
+     "memoria_gb": null,
+     "treinaveis": 856320
+    }
+   ]
+  },
+  {
+   "modelo": "adaptador TT posto 4",
+   "tipo": "tt",
+   "posto": 4,
+   "mesmos_parametros_do_tt": false,
+   "treinaveis": 236160,
+   "lr": 0.003,
+   "ppl_validacao": 2.576567907317389,
+   "ppl_teste": 2.6690676933257182,
+   "s_treino": 428.36642200000006,
+   "memoria_gb": null,
+   "tentativas": [
+    {
+     "lr": 0.001,
+     "ppl_validacao": 2.7727749899164182,
+     "ppl_teste": 2.870149129233853,
+     "s_treino": 403.1700071999994,
+     "perda_final": 1.272161990404129,
+     "memoria_gb": null,
+     "treinaveis": 236160
+    },
+    {
+     "lr": 0.003,
+     "ppl_validacao": 2.576567907317389,
+     "ppl_teste": 2.6690676933257182,
+     "s_treino": 428.36642200000006,
+     "perda_final": 1.1373553365468978,
+     "memoria_gb": null,
+     "treinaveis": 236160
+    }
+   ]
+  },
+  {
+   "modelo": "LoRA posto 3 (mesmos parâmetros do TT)",
+   "tipo": "lora",
+   "posto": 3,
+   "mesmos_parametros_do_tt": true,
+   "treinaveis": 915840,
+   "lr": 0.003,
+   "ppl_validacao": 2.502617676890312,
+   "ppl_teste": 2.585053614703372,
+   "s_treino": 210.10906909999994,
+   "memoria_gb": null,
+   "tentativas": [
+    {
+     "lr": 0.001,
+     "ppl_validacao": 2.5063985310816825,
+     "ppl_teste": 2.592248831040996,
+     "s_treino": 197.0685008999999,
+     "perda_final": 1.086706930398941,
+     "memoria_gb": null,
+     "treinaveis": 915840
+    },
+    {
+     "lr": 0.003,
+     "ppl_validacao": 2.502617676890312,
+     "ppl_teste": 2.585053614703372,
+     "s_treino": 210.10906909999994,
+     "perda_final": 1.154933124780655,
+     "memoria_gb": null,
+     "treinaveis": 915840
+    }
+   ]
+  }
+ ],
+ "data": "2026-11-24",
+ "observacao": "CPU de 4 núcleos; s_treino é o tempo de parede, com outra medição às vezes dividindo a CPU."
+}

@@ -15,15 +15,23 @@ As duas coisas, e cada uma com medida:
 | **Velocidade de IA** | Camadas largas em rede tensorial | 4.096×4.096: 6× / 3,9× / 1,6× mais rápida (lotes 1 / 64 / 1000); 8.192×8.192: 30× / 6,6× / 3,5× |
 | **Aprendizado com dados quânticos** | Memória quântica (duas cópias medidas juntas) | Simulação: 98% contra 49% do melhor clássico com o mesmo número de experimentos (6 qubits). **Em dois chips reais da IBM** (ibm_marrakesh e ibm_kingston, 4 qubits): 93% contra 69% em 100 estados, McNemar p = 0,00002, comprovantes assinados |
 | **Circuitos quânticos** | Evolução dentro de um circuito quântico | Mesmo resultado do circuito padrão com 56% menos portas de 2 qubits |
-| **Sistemas** | Decide, com estatística, onde cada tarefa roda (clássico ou quântico); carrega dados clássicos na QPU; protege e prova tudo | Foto 128×128 na QPU com 68× menos portas; 330 testes, incluindo ataques a cada camada de proteção |
+| **Sistemas** | Decide, com estatística, onde cada tarefa roda (clássico ou quântico); carrega dados clássicos na QPU; protege e prova tudo | Foto 128×128 na QPU com 68× menos portas; 344 testes, incluindo ataques a cada camada de proteção |
+
+Onde ele melhora a IA de hoje sem precisar de computador quântico: a
+**quantização guiada pelos dados** (`quantizacao.py`) guarda um modelo de
+linguagem em 4 bits por peso perdendo +7,5% de qualidade, contra +18% do
+arredondamento comum (CPU, SmolLM2-135M). O ganho é de tamanho guardado; falta
+o núcleo de cálculo com inteiros para ganhar memória e velocidade na execução.
 
 Onde ele **não** melhora, e a página de evidências mostra: fases de Ising
-com informação local (o clássico vence); comprimir um modelo de linguagem já
-treinado numa CPU comum (precisa de GPU para a "cura"; ver `llm_tensorial.py`);
-e um modelo de linguagem pequeno treinado do zero, em que a rede tensorial
-vence a fatoração clássica (3,94 contra 4,24 bits por caractere com os mesmos
-parâmetros) mas perde para um modelo denso mais estreito (3,71). A versão
-maior desse teste roda numa GPU grátis, no Kaggle ou no Colab (`exemplos/kaggle_llm_tensorial.ipynb`).
+com informação local (o clássico vence); encolher um modelo de linguagem já
+treinado com rede tensorial (na GPU, o Qwen 0,5B ficou 1,27× menor e a
+perplexidade foi de 18,7 para 28,7, muito atrás da quantização); o adaptador de ajuste fino em rede tensorial, que
+perdeu para o LoRA com os mesmos parâmetros (CPU); e um modelo de linguagem
+pequeno treinado do zero, em que a rede tensorial vence a fatoração clássica
+(3,94 contra 4,24 bits por caractere com os mesmos parâmetros) mas perde para um
+modelo denso mais estreito (3,71). As versões maiores desses testes rodam numa
+GPU grátis, no Kaggle ou no Colab (`exemplos/kaggle_llm_tensorial.ipynb`).
 
 ## Princípios: além de política e de mercado
 
@@ -62,8 +70,8 @@ Por isso ele é construído sobre o que não pertence a ninguém:
                    evolução quântica: um circuito desenha circuitos
                                │
  IA TENSORIAL      camadas TT · compressão de modelos · LLM nativo e comprimido
- (física quântica  (ia_tensorial, llm_nativo, llm_tensorial)
-  na IA clássica)
+ (física quântica  quantização guiada pelos dados · adaptadores de ajuste fino
+  na IA clássica)  (ia_tensorial, llm_nativo, llm_tensorial, quantizacao, adaptadores)
                                │
  VANTAGEM          memória quântica · dados quânticos · kernels quânticos
  QUÂNTICA

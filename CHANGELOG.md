@@ -1,5 +1,29 @@
 # Changelog
 
+## Em andamento (depois da 0.8.0): IA medida contra o que o mercado usa
+
+### O que a primeira rodada na GPU mostrou (Colab T4, 23/11/2026), sem enfeite
+- Encolher o Qwen2.5-0.5B com rede tensorial: 1,27× menor, perplexidade de 18,7 para 28,7 (posto baixo guiado pelos dados: 28,4), e a conversa em português se perdeu. A rede tensorial saiu do corte com perplexidade 179 mil e a cura de 2.000 passos a trouxe ao nível do melhor clássico, mas isso **não compete** com a quantização de 4 bits, que encolhe ~4× perdendo pouco. Fica como pesquisa.
+- Modelo nativo maior: denso 1,947 e TT (ligação 24, 6,1× menos parâmetros) 2,329 bits por caractere. A sessão caiu antes das duas linhas que decidem (posto baixo e denso estreito com os mesmos parâmetros).
+- Corrigido: o texto do resultado dizia "na CPU (1 threads)" para velocidades medidas na GPU (os 33 a 39 tokens/s da parte 1 eram da T4). Agora diz onde a geração foi medida.
+
+### Quantização guiada pelos dados (`quantizacao.py`)
+- `intN`: arredondamento por grupos de 128 pesos, com o zero sempre na grade (o padrão do mercado). `intN+dados`: escala por canal de entrada escolhida pelas ativações (a ideia do AWQ), com o erro medido na saída da camada, tr(dW C dWᵀ). `intN+dados+correcao`: soma uma correção de posto baixo do erro que sobrou pelo SVD branqueado (~0,5 bit por peso).
+- Tamanho contado em bits de verdade (códigos, escala e zero de cada grupo, escala de canal, correção). `llm_tensorial demo --metodos int8 int4 int4+dados ...` compara tudo lado a lado.
+- Medido na CPU (SmolLM2-135M, MLP inteira, perplexidade no WikiText-2, original 22,18): 4 bits comum 26,24 (+18%), guiado pelos dados 25,09, **com correção 23,85 (+7,5%)**, a 4,7 bits por peso. Em 3 bits: comum 55,17 (+149%, respostas embaralhadas), **com dados e correção 32,40 (+46%)**, coerente. O ganho é de tamanho guardado: sem núcleo de cálculo com inteiros, a execução não fica mais leve nem mais rápida.
+- `svd_branqueado` virou função própria em `ia_tensorial.py` e é usada pela compressão guiada pelos dados e pela correção.
+- Corrigido: `parametros` dos modelos quantizados contava só os parâmetros de ponto flutuante (54,9 milhões em vez de 134,5); os códigos inteiros agora contam.
+
+### Adaptadores de ajuste fino em rede tensorial (`adaptadores.py`)
+- `Adaptador`: uma camada linear congelada mais uma correção treinável, LoRA (B A) ou rede tensorial (a `CamadaTT`, com o último núcleo zerado para começar em dW = 0, como o LoRA). `ajustar` treina só a correção com os mesmos dados na mesma ordem para todos; `demo` escolhe a taxa de cada método numa validação separada e inclui um LoRA com o mesmo número de parâmetros do TT (`posto_lora_equivalente`). `python -m quirios_engine.adaptadores --passos 300`.
+- Medido na CPU (SmolLM2-135M, conversas do dia a dia, 80 passos, perplexidade no teste; original 3,939): LoRA posto 8 2,585 (2,44 milhões de parâmetros), **LoRA posto 3 com os mesmos parâmetros do TT 2,585**, TT posto 8 2,647 (856 mil), TT posto 4 2,669 (236 mil). Com os mesmos parâmetros **o LoRA ganhou** e treinou 7× mais rápido. O TT posto 4 cabe abaixo do menor LoRA possível (posto 1, 305 mil) e guarda 94% da melhora; se isso vale alguma coisa depende de ganhar do LoRA posto 1, medição seguinte.
+
+### Modelo nativo: a rede tensorial larga
+- `llm_nativo --tt-larga 768`: treina também uma TT bem mais larga com os mesmos parâmetros da TT comum (`ligacao_equivalente` acha a maior ligação que cabe). É o teste da vantagem própria da rede tensorial: camadas largas por quase nada.
+
+### Notebook (Kaggle ou Colab), três partes
+- Parte 1, quantização do Qwen2.5-0.5B (todas as camadas lineares); parte 2, adaptadores TT contra LoRA, incluindo o LoRA com os mesmos parâmetros e o menor LoRA possível; parte 3, modelo nativo em cinco versões. Cada parte grava o JSON depois de cada modelo, para nada se perder se a sessão cair.
+
 ## 0.8.0 — Fase 7: vantagem com memória quântica, prova na QPU e painel ao vivo
 
 ### Vantagem quântica medida: aprender com memória quântica (`memoria_quantica.py`)

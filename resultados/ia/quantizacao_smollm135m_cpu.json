@@ -1,0 +1,235 @@
+{
+ "modelo_base": "HuggingFaceTB/SmolLM2-135M-Instruct",
+ "posto": 32,
+ "nucleos": 3,
+ "passos_cura": 300,
+ "tokens_avaliados": 16384,
+ "dados_cura": "wikitext",
+ "dispositivo": "cpu",
+ "fator": null,
+ "grupo": 128,
+ "bits_correcao": 0.5,
+ "camadas": [
+  "gate_proj",
+  "up_proj",
+  "down_proj"
+ ],
+ "threads": 4,
+ "linhas": [
+  {
+   "modelo": "original",
+   "parametros": 134515008,
+   "bits": 2152240128,
+   "mb": 256.5670166015625,
+   "perplexidade": 22.180252746369476,
+   "tokens_por_s": 12.50862965147737,
+   "respostas": [
+    {
+     "pergunta": "What is the capital of France?",
+     "resposta": "The capital of France is Paris."
+    },
+    {
+     "pergunta": "Explain in one sentence what a quantum computer is.",
+     "resposta": "A quantum computer is a type of computer that uses quantum mechanics to perform calculations and solve problems much faster and more efficiently than classical computers."
+    },
+    {
+     "pergunta": "Give me three tips to sleep better.",
+     "resposta": "Here are three tips to help you sleep better:\n\n1. **Establish a Regular Sleep Schedule:** Try to go to bed and wake up at the same time every day, even on weekends. This will help your body and mind get"
+    }
+   ],
+   "compressao": 1.0,
+   "aceleracao": 1.0
+  },
+  {
+   "modelo": "8 bits (arredondamento)",
+   "parametros": 134515008,
+   "bits": 1533477888,
+   "mb": 182.8048095703125,
+   "perplexidade": 22.186717896794608,
+   "tokens_por_s": 1.854247737371577,
+   "respostas": [
+    {
+     "pergunta": "What is the capital of France?",
+     "resposta": "The capital of France is Paris."
+    },
+    {
+     "pergunta": "Explain in one sentence what a quantum computer is.",
+     "resposta": "A quantum computer is a type of computer that uses quantum mechanics to perform calculations much faster and more accurately than classical computers."
+    },
+    {
+     "pergunta": "Give me three tips to sleep better.",
+     "resposta": "Here are three tips to help you sleep better:\n\n1. **Establish a Regular Sleep Schedule:** Try to go to bed and wake up at the same time every day, even on weekends. This will help your body and mind get"
+    }
+   ],
+   "bits_por_peso": 8.229166666666666,
+   "metodo": "int8",
+   "s_comprimir": 1.1973173999999744,
+   "compressao": 1.4035025511890524,
+   "aceleracao": 0.14823747996668646
+  },
+  {
+   "modelo": "4 bits (arredondamento)",
+   "parametros": 134515008,
+   "bits": 1211931648,
+   "mb": 144.4735107421875,
+   "perplexidade": 26.24204360246995,
+   "tokens_por_s": 3.1988143171664487,
+   "respostas": [
+    {
+     "pergunta": "What is the capital of France?",
+     "resposta": "The capital of France is Paris."
+    },
+    {
+     "pergunta": "Explain in one sentence what a quantum computer is.",
+     "resposta": "A quantum computer is a type of computer that uses quantum mechanics to process information, enabling it to perform calculations and operations that are impossible for classical computers."
+    },
+    {
+     "pergunta": "Give me three tips to sleep better.",
+     "resposta": "1. **Establish a consistent sleep schedule.** Aim to go to bed and wake up at the same time every day, even on weekends. This helps regulate your body's internal clock and can improve your sleep quality.\n\n2. **"
+    }
+   ],
+   "bits_por_peso": 4.190972222222222,
+   "metodo": "int4",
+   "s_comprimir": 3.2193085999999766,
+   "compressao": 1.7758758355322692,
+   "aceleracao": 0.2557285974797921
+  },
+  {
+   "modelo": "4 bits guiado por dados",
+   "parametros": 134515008,
+   "bits": 1213221888,
+   "mb": 144.6273193359375,
+   "perplexidade": 25.088098521547096,
+   "tokens_por_s": 4.031958919177022,
+   "respostas": [
+    {
+     "pergunta": "What is the capital of France?",
+     "resposta": "The capital of France is Paris."
+    },
+    {
+     "pergunta": "Explain in one sentence what a quantum computer is.",
+     "resposta": "A quantum computer is a type of computer that uses quantum mechanics to perform complex calculations and operations, making them potentially faster and more efficient than classical computers."
+    },
+    {
+     "pergunta": "Give me three tips to sleep better.",
+     "resposta": "1. Create a Restful Night's Rest: Your body needs a good night's rest to feel rested and refreshed. Try to go to bed at the same time every day, and make sure you get at least 7-8 hours"
+    }
+   ],
+   "bits_por_peso": 4.207175925925926,
+   "metodo": "int4+dados",
+   "s_comprimir": 38.792299200000116,
+   "compressao": 1.773987223019834,
+   "aceleracao": 0.3223341830014781
+  },
+  {
+   "modelo": "4 bits guiado por dados + correção (~0.5 bit)",
+   "parametros": 136986048,
+   "bits": 1252758528,
+   "mb": 149.3404541015625,
+   "perplexidade": 23.849932275784035,
+   "tokens_por_s": 6.646074999574213,
+   "respostas": [
+    {
+     "pergunta": "What is the capital of France?",
+     "resposta": "The capital of France is Paris."
+    },
+    {
+     "pergunta": "Explain in one sentence what a quantum computer is.",
+     "resposta": "A quantum computer is a type of computer that uses quantum mechanics to perform calculations much faster and more efficiently than classical computers."
+    },
+    {
+     "pergunta": "Give me three tips to sleep better.",
+     "resposta": "1. Create a Restful Night's Sleep:\n\n- 1. Establish a Regular Sleep Schedule:\n- 2. Maintain a Healthy Diet:\n- 3. Exercise Regularly:\n- 4. Manage Stress:"
+    }
+   ],
+   "bits_por_peso": 4.703703703703703,
+   "metodo": "int4+dados+correcao",
+   "s_comprimir": 83.97984029999998,
+   "compressao": 1.718000779795929,
+   "aceleracao": 0.5313191920099144
+  },
+  {
+   "modelo": "3 bits (arredondamento)",
+   "parametros": 134515008,
+   "bits": 1131545088,
+   "mb": 134.89068603515625,
+   "perplexidade": 55.167949158827355,
+   "tokens_por_s": 7.077811110827433,
+   "respostas": [
+    {
+     "pergunta": "What is the capital of France?",
+     "resposta": "\"Capital\" is a common misspécies in French, but the correct phrase is \"capital of France.\" \"Capital of France\" is a common misspécies in French, but the correct phrase is \"capital of France.\" \"Capital"
+    },
+    {
+     "pergunta": "Explain in one sentence what a quantum computer is.",
+     "resposta": "\"A quantum computer is a highly-reliable, highly-powerful, and highly-reliable-reliable-reliable-reliable-reliable-reliable-reliable-reliable-reliable-reliable"
+    },
+    {
+     "pergunta": "Give me three tips to sleep better.",
+     "resposta": "\"Sleeping better is important for health and well being. Here are some tips for sleeping better:\n\n\"1. Go to bed early in the morning.\n\"2. Go to bed early in the morning.\n\"3"
+    }
+   ],
+   "bits_por_peso": 3.181423611111111,
+   "metodo": "int3",
+   "s_comprimir": 1.107306299999891,
+   "compressao": 1.9020365611803178,
+   "aceleracao": 0.5658342526746314
+  },
+  {
+   "modelo": "3 bits guiado por dados",
+   "parametros": 134515008,
+   "bits": 1132835328,
+   "mb": 135.04449462890625,
+   "perplexidade": 38.70221422333725,
+   "tokens_por_s": 6.278668252082683,
+   "respostas": [
+    {
+     "pergunta": "What is the capital of France?",
+     "resposta": "France is the 20th most-touted country in the world by the United Nations, and is the 18th most-touted by the United Nations. It is also the 18th-t"
+    },
+    {
+     "pergunta": "Explain in one sentence what a quantum computer is.",
+     "resposta": "A quantum computer is a computer that uses the principles of quantum mechanics to perform calculations, whereas classical computers rely on the principles of classical mechanics."
+    },
+    {
+     "pergunta": "Give me three tips to sleep better.",
+     "resposta": "Here are three tips to help you get the most out of your sleep:\n\n1. **Establish a Routine**: This can help you fall asleep and stay asleep for a long time. Try to go to bed when you're ready to"
+    }
+   ],
+   "bits_por_peso": 3.197627314814815,
+   "metodo": "int3+dados",
+   "s_comprimir": 27.619477399999823,
+   "compressao": 1.8998702413348465,
+   "aceleracao": 0.5019469300013308
+  },
+  {
+   "modelo": "3 bits guiado por dados + correção (~0.5 bit)",
+   "parametros": 136986048,
+   "bits": 1172371968,
+   "mb": 139.75762939453125,
+   "perplexidade": 32.39747876096428,
+   "tokens_por_s": 5.936286945270162,
+   "respostas": [
+    {
+     "pergunta": "What is the capital of France?",
+     "resposta": "France is a country in western Europe, located primarily in the northern part of the Mediterranean Sea. It is bordered by several other European countries, including Belgium, Italy, and numerous others. France is famous for its rich cultural heritage, known for"
+    },
+    {
+     "pergunta": "Explain in one sentence what a quantum computer is.",
+     "resposta": "A quantum computer is a computer that uses the principles of quantum mechanics to perform calculations, whereas classical computers rely on the principles of classical mechanics."
+    },
+    {
+     "pergunta": "Give me three tips to sleep better.",
+     "resposta": "Here are three tips to help you get the most out of your sleep:\n\n1. **Establish a Routine**: Try to go to bed at the same time every day, even on weekends. This will help your body get into a"
+    }
+   ],
+   "bits_por_peso": 3.6941550925925926,
+   "metodo": "int3+dados+correcao",
+   "s_comprimir": 82.70461030000001,
+   "compressao": 1.8357997177905911,
+   "aceleracao": 0.47457532205128783
+  }
+ ],
+ "data": "2026-11-24",
+ "observacao": "Medido numa CPU de 4 núcleos dividida com outra medição: tokens_por_s não serve como velocidade (num teste isolado a camada quantizada tem a mesma velocidade da original). O ganho é de tamanho guardado."
+}
