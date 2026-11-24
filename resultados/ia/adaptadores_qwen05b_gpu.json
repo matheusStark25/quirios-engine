@@ -1,0 +1,118 @@
+{
+ "modelo_base": "Qwen/Qwen2.5-0.5B-Instruct",
+ "tarefa": "everyday-conversations (chat)",
+ "passos": 300,
+ "lote": 4,
+ "seq": 256,
+ "lrs": [
+  0.001,
+  0.003,
+  0.01
+ ],
+ "nucleos": 4,
+ "camadas": [
+  "q_proj",
+  "k_proj",
+  "v_proj",
+  "o_proj",
+  "gate_proj",
+  "up_proj",
+  "down_proj"
+ ],
+ "tokens_avaliados": 16384,
+ "tokens_treino": 428512,
+ "dispositivo": "cuda",
+ "data": "2026-11-24",
+ "onde": "Google Colab, GPU Tesla T4 (gratuito)",
+ "observacao": "As 4 linhas do meio saíram da primeira rodada, que caiu no último método (o LoRA posto 1); o LoRA posto 1 e o original foram medidos de novo numa máquina nova, com a mesma semente: as perdas de treino passo a passo repetiram as da primeira rodada (0,906 e 0,953 nos passos 100 e 200).",
+ "linhas": [
+  {
+   "modelo": "original, sem ajuste",
+   "tipo": null,
+   "posto": null,
+   "treinaveis": 0,
+   "ppl_validacao": 7.160101782990996,
+   "ppl_teste": 7.586589075994789,
+   "origem": "JSON gravado pelo QURIOS (rodada separada, mesma semente e mesmas configurações)"
+  },
+  {
+   "modelo": "LoRA posto 8",
+   "tipo": "lora",
+   "posto": 8,
+   "treinaveis": 4399104,
+   "lr": 0.001,
+   "ppl_teste": 2.421,
+   "origem": "transcrito da saída impressa do notebook (3 casas); a sessão do Colab caiu antes de gravar o JSON"
+  },
+  {
+   "modelo": "adaptador TT posto 8",
+   "tipo": "tt",
+   "posto": 8,
+   "treinaveis": 883200,
+   "lr": 0.001,
+   "ppl_teste": 2.469,
+   "origem": "transcrito da saída impressa do notebook (3 casas); a sessão do Colab caiu antes de gravar o JSON"
+  },
+  {
+   "modelo": "LoRA posto 2 (mesmos parâmetros do TT)",
+   "tipo": "lora",
+   "posto": 2,
+   "mesmos_parametros_do_tt": true,
+   "treinaveis": 1099776,
+   "lr": 0.001,
+   "ppl_teste": 2.379,
+   "origem": "transcrito da saída impressa do notebook (3 casas); a sessão do Colab caiu antes de gravar o JSON"
+  },
+  {
+   "modelo": "adaptador TT posto 4",
+   "tipo": "tt",
+   "posto": 4,
+   "treinaveis": 256512,
+   "lr": 0.001,
+   "ppl_teste": 2.484,
+   "origem": "transcrito da saída impressa do notebook (3 casas); a sessão do Colab caiu antes de gravar o JSON"
+  },
+  {
+   "modelo": "LoRA posto 1",
+   "tipo": "lora",
+   "posto": 1,
+   "mesmos_parametros_do_tt": false,
+   "treinaveis": 549888,
+   "lr": 0.001,
+   "ppl_validacao": 2.331029057265214,
+   "ppl_teste": 2.3848157528472,
+   "s_treino": 219.74600820799998,
+   "memoria_gb": 6.577093124389648,
+   "tentativas": [
+    {
+     "lr": 0.001,
+     "ppl_validacao": 2.331029057265214,
+     "ppl_teste": 2.3848157528472,
+     "s_treino": 219.74600820799998,
+     "perda_final": 0.874843242764473,
+     "memoria_gb": 6.577093124389648,
+     "treinaveis": 549888
+    },
+    {
+     "lr": 0.003,
+     "ppl_validacao": 2.3909109292315445,
+     "ppl_teste": 2.4433686391387095,
+     "s_treino": 226.80131816899996,
+     "perda_final": 0.8607720047235489,
+     "memoria_gb": 6.577642440795898,
+     "treinaveis": 549888
+    },
+    {
+     "lr": 0.01,
+     "ppl_validacao": 636.2805076109679,
+     "ppl_teste": 610.4082857716951,
+     "s_treino": 223.0528691049999,
+     "perda_final": 6.4085777759552,
+     "memoria_gb": 6.577642440795898,
+     "treinaveis": 549888
+    }
+   ],
+   "origem": "JSON gravado pelo QURIOS (rodada separada, mesma semente e mesmas configurações)"
+  }
+ ]
+}

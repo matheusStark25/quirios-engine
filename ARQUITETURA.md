@@ -27,7 +27,7 @@ Onde ele **não** melhora, e a página de evidências mostra: fases de Ising
 com informação local (o clássico vence); encolher um modelo de linguagem já
 treinado com rede tensorial (na GPU, o Qwen 0,5B ficou 1,27× menor e a
 perplexidade foi de 18,7 para 28,7, muito atrás da quantização); o adaptador de ajuste fino em rede tensorial, que
-perdeu para o LoRA com os mesmos parâmetros (CPU); e um modelo de linguagem
+perdeu para o LoRA com os mesmos parâmetros na CPU e na GPU (descartado); e um modelo de linguagem
 pequeno treinado do zero, em que a rede tensorial vence a fatoração clássica
 (3,94 contra 4,24 bits por caractere com os mesmos parâmetros) mas perde para um
 modelo denso mais estreito (3,71). As versões maiores desses testes rodam numa

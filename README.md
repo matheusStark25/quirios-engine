@@ -84,7 +84,7 @@ processor) and reaches the processor without being measured first. It does **not
 | Native tensor-network language model: beats classical low-rank compression (3.94 vs 4.24 bits/char) but **loses** to a narrower dense model (3.71) at this scale | CPU |
 | Data-guided 4-bit weight quantization with a low-rank error correction **halves the quality loss** of standard rounding: Qwen2.5-0.5B +11% vs +22%, SmolLM2-135M +7.5% vs +18% (3-bit: +62% vs +310%). Gain is stored size only; no integer kernel yet | GPU T4 (Qwen), CPU (SmolLM2) |
 | Shrinking a trained 0.5B model with tensor networks: 1.27× smaller but perplexity 18.7 → 28.7 and chat lost. **Does not compete** with quantization; kept as research | GPU (T4) |
-| Tensor-network fine-tuning adapter vs LoRA: **LoRA wins** at the same trainable parameters (2.585 vs 2.647 test perplexity) and even at its smallest size, rank 1 (2.580 vs 2.669) | CPU, SmolLM2-135M |
+| Tensor-network fine-tuning adapter vs LoRA: **LoRA wins** at the same trainable parameters (Qwen 0.5B: 2.379 vs 2.469 test perplexity) and even at its smallest size, rank 1. Tested and **dropped** | GPU T4 (Qwen), CPU (SmolLM2) |
 | Ising phases with the same measurement budget for both sides: **classical wins** (−6 to −11 points) | Simulation |
 
 QURIOS reports where it loses as clearly as where it wins. An earlier "+18 points" result was **retracted**
